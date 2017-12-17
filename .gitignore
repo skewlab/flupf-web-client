@@ -11,3 +11,14 @@ pom.xml.asc
 .lein-plugins/
 .lein-failures
 .nrepl-port
+
+# Mac
+.DS_Store
+
+env/
+
+# IntelliJ
+.idea
+
+# Figwheel
+figwheel_server.log
