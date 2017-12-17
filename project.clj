@@ -80,6 +80,7 @@
             }
    }
 
+  :jvm-opts ["--add-modules" "java.xml.bind"]
 
   :figwheel
   {:http-server-root "public"
