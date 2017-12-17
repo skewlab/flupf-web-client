@@ -15,7 +15,7 @@ pom.xml.asc
 # Mac
 .DS_Store
 
-env/
+#env/
 
 # IntelliJ
 .idea
