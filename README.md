@@ -1,2 +1,2 @@
-# flupf-web-client
+# Flupf web client
 Flupf social network
