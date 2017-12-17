@@ -1,14 +1,24 @@
 (ns flupf-web-client.core
-    (:require [reagent.core :as reagent :refer [atom]]
-              [secretary.core :as secretary :include-macros true]
-              [accountant.core :as accountant]))
+  (:require [reagent.core :as reagent :refer [atom]]
+            [secretary.core :as secretary :include-macros true]
+            [accountant.core :as accountant]))
 
 ;; -------------------------
 ;; Views
+(defn contacts [contacts]
+  [:div {:class "contacts"}
+   [:h3 "Contacts"]
+   [:ul
+    (for [contact contacts]
+      ^{:key contact} [:li "Name " (:name contact)])]
+   ])
 
 (defn home-page []
   [:div [:h2 "Welcome to flupf-web-client"]
-   [:div [:a {:href "/about"} "go to about page"]]])
+   [:div [:a {:href "/about"} "go to about page"]]
+   [contacts [{:name "jonas" :lastname "johansson"}
+              {:name "Filip" :lastname "Johansson"}]]])
+
 
 (defn about-page []
   [:div [:h2 "About flupf-web-client"]
@@ -23,10 +33,10 @@
   [:div [@page]])
 
 (secretary/defroute "/" []
-  (reset! page #'home-page))
+                    (reset! page #'home-page))
 
 (secretary/defroute "/about" []
-  (reset! page #'about-page))
+                    (reset! page #'about-page))
 
 ;; -------------------------
 ;; Initialize app
