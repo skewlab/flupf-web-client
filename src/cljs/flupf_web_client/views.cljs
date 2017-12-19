@@ -9,7 +9,7 @@
 
 (defn header []
   [:header
-   [:a {:on-click   (sign-out "Jonas")
+   [:a {:on-click   #(sign-out "Jonas")
         :class "link-right link"}
     "Sign out"]
    [:a {:href "/my-profile"
