@@ -4,7 +4,11 @@
             [reagent.core :as reagent :refer [atom]]
             [secretary.core :as secretary :include-macros true]
             [accountant.core :as accountant]
-            [cljs.core.async :refer [<!]]))
+            [cljs.core.async :refer [<!]]
+            [ajax.core :refer [GET POST PUT]]))
+
+
+(defonce app-state (atom {}))
 
 ;--- HEADER ---
 (defn sign-out [username]
@@ -35,14 +39,21 @@
   )
 
 ;--- Profile sidebar ---
+(defn get-userprofile []
+  (println "hej")
+  (GET "http://localhost:8000/api/users/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" {:handler (fn [res] (reset! app-state res))})
+  (println @app-state)
+  )
 
-(defn profile-sidebar []
+(defn profile-sidebar [state]
+  (fn []
   [:div {:class "profile-info"}
    [:img {:src "http://www.pushetta.com/uploads/channel_media/497e655768de45f28d14039c45fc0fee.bmp"
           :alt "no avatar available"}]
    [:h2 "Username"]
    [:ul
-    [:li (go (:body (<! (api/api-get "users/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"))))]]])
+    [:li (:profile-info @app-state)]]]))
+
 
 (defn contacts-list []
   [:div {:class "contacts-list"}
@@ -58,8 +69,8 @@
       ^{:key contact} [:li "Name " (:name contact)])]
    ])
 
-(defn home-page []
-
+(defn home-page [state]
+  (get-userprofile)
   [:div [header]
    [profile-sidebar]
    [user-feed]
