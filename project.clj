@@ -5,6 +5,9 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
   :dependencies [[org.clojure/clojure "1.8.0"]
+                 [org.clojure/core.async "0.3.465"]
+                 [cljs-ajax "0.7.3"]
+                 [cljs-http "0.1.44"]
                  [ring-server "0.5.0"]
                  [reagent "0.7.0"]
                  [reagent-utils "0.2.1"]
@@ -80,7 +83,7 @@
             }
    }
 
-  :jvm-opts ["--add-modules" "java.xml.bind"]
+  ;:jvm-opts ["--add-modules" "java.xml.bind"]
 
   :figwheel
   {:http-server-root "public"
