@@ -4,7 +4,8 @@
             [reagent.core :as reagent :refer [atom]]
             [secretary.core :as secretary :include-macros true]
             [accountant.core :as accountant]
-            [cljs.core.async :refer [<!]]
+            [cljs.core.async :refer [<! put!]]
+            [cljs-http.client :as http]
             [ajax.core :refer [GET POST PUT]]))
 
 
@@ -14,7 +15,9 @@
 (defn sign-out [username]
   (println username "signed out"))
 
+
 (defn user-feed []
+  (let [state (api/api-get app-state "posts/all")]
   [:div {:class "profile-feed"}
    [:div {:class "post"}
     [:p "ID:"]
@@ -23,7 +26,8 @@
     [:br]
     "Date: "
     [:br]
-    [:p "Ups: "]]])
+    [:p "Ups: "]]]))
+
 
 (defn header []
   [:header
@@ -39,20 +43,18 @@
   )
 
 ;--- Profile sidebar ---
-(defn get-userprofile []
-  (println "hej")
-  (GET "http://localhost:8000/api/users/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" {:handler (fn [res] (reset! app-state res))})
-  (println @app-state)
-  )
 
 (defn profile-sidebar [state]
-  (fn []
-  [:div {:class "profile-info"}
-   [:img {:src "http://www.pushetta.com/uploads/channel_media/497e655768de45f28d14039c45fc0fee.bmp"
-          :alt "no avatar available"}]
-   [:h2 "Username"]
-   [:ul
-    [:li (:profile-info @app-state)]]]))
+  (let [state (api/api-get app-state "users/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")]
+    (fn []
+      [:div {:class "profile-info"}
+       [:img {:src (get-in @state [:avatar :String])
+              :alt "no avatar available"}]
+       [:h2 (get-in @state [:alias :String])]
+       [:ul
+        [:li (get-in @state [:description :String])]
+        [:li (get-in @state [:website :String])]
+        [:li (get-in @state [:phonenumber :String])]]])))
 
 
 (defn contacts-list []
@@ -61,22 +63,10 @@
     [:h2 "Alias of contact"]]]
   )
 
-(defn contacts [contacts]
-  [:div {:class "contacts"}
-   [:h3 "Contacts"]
-   [:ul
-    (for [contact contacts]
-      ^{:key contact} [:li "Name " (:name contact)])]
-   ])
 
 (defn home-page [state]
-  (get-userprofile)
-  [:div [header]
+  [:div
+   [header]
    [profile-sidebar]
    [user-feed]
-   [contacts-list]
-   ;[:h2 "Welcome to flupf-web-client"]
-   ;[:div [:a {:href "/about"} "go to about page"]]
-   ;[contacts [{:name "jonasj" :lastname "johansson"}
-   ;           {:name "Filip" :lastname "Johansson"}]]
-   ])
+   [contacts-list]])

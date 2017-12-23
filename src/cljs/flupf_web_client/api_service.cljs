@@ -3,17 +3,9 @@
   (:require [cljs-http.client :as http]
             [cljs.core.async :refer [<!]]))
 
-(defn api-get [endpoint]
-  (go (let [response (<! (http/get (str "http://localhost:8000/api/" endpoint)
-                                   {:with-credentials? false
-                                    :headers           {"Access-Control-Allow-Origin" "*"}}))]
-        (prn (:status response))
+(defn api-get [state endpoint]
+  (go (let [response (<! (http/get
+                           (str "http://localhost:3000/api/" endpoint)))]
         (prn (:body response))
-        (:body response))))
-
-
-(defn api-post [endpoint data]
-  (go (let [response (<! (http/post (str "http://localhost:8000/api/" endpoint)
-                                   {:json-params data}))]
-        (prn (:status response))
-        (prn (:body response)))))
+        (swap! state :api-response (:body response))))
+  state)
