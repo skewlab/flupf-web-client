@@ -22,6 +22,9 @@
   [:div [@page]])
 
 (secretary/defroute "/" []
+                    (reset! page #'views/start-page))
+
+(secretary/defroute "/home" []
                     (reset! page #'views/home-page))
 
 (secretary/defroute "/about" []

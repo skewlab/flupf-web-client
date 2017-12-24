@@ -12,21 +12,9 @@
 (defonce app-state (atom {}))
 
 ;--- HEADER ---
+
 (defn sign-out [username]
   (println username "signed out"))
-
-
-(defn user-feed []
-  (let [state (api/api-get app-state "posts/all")]
-  [:div {:class "profile-feed"}
-   [:div {:class "post"}
-    [:p "ID:"]
-    [:h2 "This is a mock post"]
-    "author:"
-    [:br]
-    "Date: "
-    [:br]
-    [:p "Ups: "]]]))
 
 
 (defn header []
@@ -41,6 +29,69 @@
         :class-name "link-left link"}
     "Start"]]
   )
+
+;--- LOGIN PAGE ---
+(defn sign-in
+  "Sign in a user"
+  []
+  (println "::=> Signing in"))
+
+
+(defn input-element
+  "An input element which updates its value on change"
+  [id name type value]
+  [:input {:id        id
+           :name      name
+           :class     "form-control"
+           :type      type
+           :required  ""
+           :value     @value
+           :on-change #(reset! value (-> % .-target .-value))}])
+
+(defn email-input
+  [email-address-atom]
+  (input-element "email" "email" "email" email-address-atom))
+
+
+(defn login-form
+  "Login form"
+  []
+  (let [email-address (atom nil)]
+    [:div
+     [:form {:class "login-form"}
+      [email-input email-address]
+      [:input {:type        "password"
+               :placeholder "password"}]
+      [:input {:type  "submit"
+               :value "sign in"}]]
+     ;[:div "epost: " @email-address]
+     ]))
+
+
+(defn start-page
+  "First view of the webpage"
+  []
+  [:div
+   (header)
+   [:h1 "Start page"]
+   (login-form)
+   ])
+
+
+;--- User feed ---
+
+(defn user-feed []
+  (let [state (api/api-get app-state "posts/all")]
+  [:div {:class "profile-feed"}
+   [:div {:class "post"}
+    [:p "ID:"]
+    [:h2 "This is a mock post"]
+    "author:"
+    [:br]
+    "Date: "
+    [:br]
+    [:p "Ups: "]]]))
+
 
 ;--- Profile sidebar ---
 
