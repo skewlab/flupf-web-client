@@ -5,11 +5,12 @@
             [secretary.core :as secretary :include-macros true]
             [accountant.core :as accountant]
             [cljs.core.async :refer [<! put!]]
-            [cljs-http.client :as http]
-            [ajax.core :refer [GET POST PUT]]))
+            [cljs-http.client :as http]))
 
 
-(defonce app-state (atom {}))
+(defonce app-state
+         (atom {:authenticated false
+                :user-id       nil}))
 
 ;--- HEADER ---
 
@@ -39,33 +40,31 @@
 
 (defn input-element
   "An input element which updates its value on change"
-  [id name type value]
-  [:input {:id        id
-           :name      name
-           :class     "form-control"
-           :type      type
-           :required  ""
-           :value     @value
-           :on-change #(reset! value (-> % .-target .-value))}])
-
-(defn email-input
-  [email-address-atom]
-  (input-element "email" "email" "email" email-address-atom))
+  [id name type placeholder value]
+  [:input {:id          id
+           :name        name
+           :placeholder placeholder
+           :class       "form-control"
+           :type        type
+           :required    ""
+           :value       @value
+           :on-change   #(reset! value (-> % .-target .-value))}])
 
 
 (defn login-form
   "Login form"
   []
-  (let [email-address (atom nil)]
+  (let [email-address (atom nil)
+        password (atom nil)
+        credentials (atom nil)]
     [:div
      [:form {:class "login-form"}
-      [email-input email-address]
-      [:input {:type        "password"
-               :placeholder "password"}]
-      [:input {:type  "submit"
-               :value "sign in"}]]
-     ;[:div "epost: " @email-address]
-     ]))
+      [input-element "email" "email" "email" "email" email-address]
+      [input-element "password" "password" "password" "password" password]
+      [:input {:type     "button"
+               :value    "sign in"
+               :on-click #(api/api-post credentials "signin" {:email    @email-address
+                                                            :password @password})}]]]))
 
 
 (defn start-page
@@ -82,15 +81,15 @@
 
 (defn user-feed []
   (let [state (api/api-get app-state "posts/all")]
-  [:div {:class "profile-feed"}
-   [:div {:class "post"}
-    [:p "ID:"]
-    [:h2 "This is a mock post"]
-    "author:"
-    [:br]
-    "Date: "
-    [:br]
-    [:p "Ups: "]]]))
+    [:div {:class "profile-feed"}
+     [:div {:class "post"}
+      [:p "ID:"]
+      [:h2 "This is a mock post"]
+      "author:"
+      [:br]
+      "Date: "
+      [:br]
+      [:p "Ups: "]]]))
 
 
 ;--- Profile sidebar ---

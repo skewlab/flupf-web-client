@@ -2,7 +2,8 @@
   (:require [reagent.core :as reagent :refer [atom]]
             [secretary.core :as secretary :include-macros true]
             [accountant.core :as accountant]
-            [flupf-web-client.views :as views]))
+            [flupf-web-client.views :as views]
+            [flupf-web-client.api-service :as api]))
 
 
 
@@ -14,14 +15,19 @@
    [:div [:a {:href "/"} "go to the home page"]]])
 
 ;; -------------------------
+
+(defn signed-in? []
+  (println (api/authenticated?)))
+
 ;; Routes
 
-(def page (atom #'views/home-page))
+(def page (atom #'views/start-page))
 
 (defn current-page []
   [:div [@page]])
 
 (secretary/defroute "/" []
+                    (println (signed-in?))
                     (reset! page #'views/start-page))
 
 (secretary/defroute "/home" []
