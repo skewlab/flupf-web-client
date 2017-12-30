@@ -1,11 +1,8 @@
 (ns flupf-web-client.views
-  (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [flupf-web-client.api-service :as api]
             [reagent.core :as reagent :refer [atom]]
             [secretary.core :as secretary :include-macros true]
-            [accountant.core :as accountant]
-            [cljs.core.async :refer [<! put!]]
-            [cljs-http.client :as http]))
+            [accountant.core :as accountant]))
 
 
 
