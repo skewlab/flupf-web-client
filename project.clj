@@ -6,8 +6,9 @@
 
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/core.async "0.3.465"]
-                 [cljs-ajax "0.7.3"]
                  [cljs-http "0.1.44"]
+                 [cljs-ajax "0.7.3"]
+                 [devcards "0.2.4"]
                  [ring-server "0.5.0"]
                  [reagent "0.7.0"]
                  [reagent-utils "0.2.1"]
@@ -108,7 +109,6 @@
                                   [figwheel-sidecar "0.5.14"]
                                   [org.clojure/tools.nrepl "0.2.13"]
                                   [com.cemerick/piggieback "0.2.2"]
-                                  [devcards "0.2.3" :exclusions [cljsjs/react]]
                                   [pjstadig/humane-test-output "0.8.3"]
                                   ]
 
