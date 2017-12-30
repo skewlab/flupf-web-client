@@ -92,6 +92,7 @@
     (api/api-get state user)
     (fn []
       [:div {:class "profile-info"}
+
        [:img {:src (get-in @state [(keyword user) :avatar :String])
               :alt "no avatar available"}]
        [:h2 (get-in @state [(keyword user) :alias :String])]
@@ -104,7 +105,6 @@
 (defn contacts-list [state]
   (let [contacts "my-contacts"]
     (api/api-get state contacts)
-    (prn @state)
     (fn []
       [:div {:class "contacts-list"}
        (map (fn [contact]
