@@ -73,11 +73,13 @@
 (defn user-feed [state]
   (api/api-get state "posts/all")
   (fn []
-    [:div {:class "profile-feed"}
+    [:div {:class "user-feed"}
      (map (fn [post]
             ^{:key post} [:div {:class "post"}
-                          [:p "ID: " (:id post)]
-                          [:h2 (:content post)]
+                          [:div {:class "post-author"}
+                           [:p "ID: " (:id post)]]
+                          [:div {:class "post-content"}
+                           [:h2 (:content post)]]
                           "author: " (:userid post)
                           [:br]
                           "Date: " (:dade_created post)
@@ -89,16 +91,16 @@
 ;--- Profile sidebar ---
 
 (defn profile-sidebar [state]
-  (let [user "users/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"]
+  (let [user "users/me"]
     (api/api-get state user)
     (fn []
       [:div {:class "profile-info"}
 
        [:img {:src (get-in @state [(keyword user) :avatar :String])
               :alt "no avatar available"}]
-       [:h2 (get-in @state [(keyword user) :alias :String])]
+       [:h2 {:class "user-profile-name"} (get-in @state [(keyword user) :alias :String])]
+       [:p {:class "user-description"} (get-in @state [(keyword user) :description :String])]
        [:ul
-        [:li (get-in @state [(keyword user) :description :String])]
         [:li (get-in @state [(keyword user) :website :String])]
         [:li (get-in @state [(keyword user) :phonenumber :String])]]])))
 
@@ -116,8 +118,12 @@
 
 
 (defn home-page [state]
-  [:div
+  [:div {:class "wrapper"}
    [header]
-   [profile-sidebar state]
-   [user-feed state]
-   [contacts-list state]])
+   [:div {:class "user-home-view"}
+    [profile-sidebar state]
+    [:div {:class "feed-field"}
+     [:div {:class "left-column"}
+      [user-feed state]]
+     [:div {:class "right-column"}
+      [contacts-list state]]]]])
