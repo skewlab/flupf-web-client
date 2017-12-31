@@ -35,7 +35,9 @@
                       (reset! page #'views/start-page)))
 
 (secretary/defroute "/home" []
-                    (reset! page #(views/home-page app-state)))
+                    (prn (:authenticated @app-state))
+                    (if (:authenticated @app-state)
+                      (reset! page #(views/home-page app-state))))
 
 (secretary/defroute "/about" []
                     (reset! page #'about-page))

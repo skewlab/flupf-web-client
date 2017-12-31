@@ -29,14 +29,15 @@
 (defn input-element
   "An input element which updates its value on change"
   [id name type placeholder value]
-  [:input {:id          id
-           :name        name
-           :placeholder placeholder
-           :class       "form-control"
-           :type        type
-           :required    ""
-           :value       @value
-           :on-change   #(reset! value (-> % .-target .-value))}])
+  [:input {:id           id
+           :name         name
+           :placeholder  placeholder
+           :class        "form-control"
+           :type         type
+           :required     ""
+           :autocomplete "email"
+           :value        @value
+           :on-change    #(reset! value (-> % .-target .-value))}])
 
 
 (defn login-form
@@ -45,26 +46,26 @@
   (let [email-address (atom nil)
         password (atom nil)
         credentials (atom nil)]
-    [:div
-     [:form {:class "login-form"}
+    [:div {:class "sign-in"}
+     [:h1 "Sign in"]
+     [:form {:class     "login-form"
+             :on-submit (fn [e] (.preventDefault e))}
       [input-element "email" "email" "email" "email" email-address]
       [input-element "password" "password" "password" "password" password]
-      [:input {:type     "button"
+      [:input {:type     "submit"
                :value    "sign in"
                :on-click (fn []
                            (api/api-post credentials "signin" {:email    @email-address
                                                                :password @password})
-                           (secretary/dispatch! "/home"))}]]]))
+                           (secretary/dispatch! "/home"))}]]
+     [:span {:class "full-link-wrapper"}
+      [:a {:href "/"} "Forgot your password?"]]]))
 
 
 (defn start-page
   "First view of the webpage"
   []
-  [:div
-   (header)
-   [:h1 "Start page"]
-   (login-form)
-   ])
+  [:div (login-form)])
 
 
 ;--- User feed ---
