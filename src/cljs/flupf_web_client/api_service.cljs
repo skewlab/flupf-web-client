@@ -1,13 +1,23 @@
 (ns flupf-web-client.api-service
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [cljs-http.client :as http]
-            [cljs.core.async :refer [<!]]))
+            [ajax.core :as ajax]
+            [cljs.core.async :refer [<! put!]]))
 
 
-(defn authenticate [state]
-  (go (let [response (<! (http/get
-                           (str "http://localhost:8000/api/auth")))]
-        (:status response))))
+
+
+(defn authenticate [state response-chanel]
+  (ajax/GET "http://localhost:8000/api/auth"
+            {:handler          (fn [res]
+                                 (println res)
+                                 (swap! state assoc :authenticated true)
+                                 (put! response-chanel [state :authenticate true]))
+             :error-handler    (fn [error]
+                                 (println error)
+                                 (swap! state assoc :authenticated false)
+                                 (put! response-chanel [state :authenticate false]))
+             :with-credentials true}))
 
 
 (defn api-get [state endpoint]

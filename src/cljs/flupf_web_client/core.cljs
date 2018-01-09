@@ -3,11 +3,13 @@
   (:require [reagent.core :as reagent]
             [cljs.core.async :refer [<! chan put!]]
             [flupf-web-client.views :refer [landing-page]]
-            [flupf-web-client.construct :refer [create-state]]))
+            [flupf-web-client.construct :refer [create-state]]
+            [flupf-web-client.api-service :as api]))
 
 
 ;; --- Initialize app ---
-(def constructchanel (chan))
+
+(def response-chanel (chan))
 
 (defn mount-root [state]
   "render root component"
@@ -15,5 +17,7 @@
 
 
 (defn init! []
-  ;(put! constructchanel [:initiate-state])
-  (mount-root (create-state)))
+  (let [state (create-state)]
+    (api/authenticate state response-chanel)
+    (go (let [[state] (<! response-chanel)]
+          (mount-root state)))))

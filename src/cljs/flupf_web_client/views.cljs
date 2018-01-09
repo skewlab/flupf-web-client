@@ -41,7 +41,7 @@
 
 (defn login-form
   "Login form"
-  []
+  [state]
   (let [email-address (reagent/atom nil)
         password (reagent/atom nil)
         credentials (reagent/atom nil)]
@@ -63,8 +63,8 @@
 
 (defn login-page
   "First view of the webpage"
-  []
-  [:div (login-form)])
+  [state]
+  [:div (login-form state)])
 
 
 ;--- User feed ---
@@ -116,22 +116,19 @@
 
 (defn home-page [state]
   [:div
-   #_[header]
+   [header]
    #_[profile-sidebar state]
    #_[user-feed state]
-   #_[contacts-list state]
-   "hej"])
+   #_[contacts-list state]])
 
 
-(defmulti pages (fn[page _] page))
-(defmethod pages :home [_ _] [home-page])
-(defmethod pages :login [_ _] [login-page])
+(defmulti pages (fn[state page _] page))
+(defmethod pages :home [state _ _] [home-page state])
+(defmethod pages :login [state _ _] [login-page state])
 
 
 (defn landing-page [state]
-  (prn state)
-  (reagent/with-let [active-page (:active-page state)
-                     user (:user state)]
-                    (if-not (nil? user)
-                      (pages @active-page @user)
-                      (pages :login nil))))
+  (reagent/with-let [active-page (:active-page @state)]
+                    (if (:authenticated @state)
+                      (pages state active-page nil)
+                      (pages state :login nil))))

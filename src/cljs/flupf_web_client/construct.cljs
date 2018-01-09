@@ -1,7 +1,7 @@
-(ns flupf-web-client.construct)
+(ns flupf-web-client.construct
+  (:require [reagent.core :as reagent]))
 
 (defn create-state []
   "initiate state"
-  {:user nil
-   :active-page :home
-   :authenticated false })
+  (reagent/atom {:active-page   :home
+                 :authenticated nil}))
