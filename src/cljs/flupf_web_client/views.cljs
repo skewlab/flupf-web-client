@@ -1,6 +1,6 @@
 (ns flupf-web-client.views
   (:require [flupf-web-client.api-service :as api]
-            [reagent.core :as reagent :refer [atom]]
+            [reagent.core :as reagent]
             [secretary.core :as secretary :include-macros true]
             [accountant.core :as accountant]))
 
@@ -35,7 +35,6 @@
            :class        "form-control"
            :type         type
            :required     ""
-           :autocomplete "email"
            :value        @value
            :on-change    #(reset! value (-> % .-target .-value))}])
 
@@ -43,9 +42,9 @@
 (defn login-form
   "Login form"
   []
-  (let [email-address (atom nil)
-        password (atom nil)
-        credentials (atom nil)]
+  (let [email-address (reagent/atom nil)
+        password (reagent/atom nil)
+        credentials (reagent/atom nil)]
     [:div {:class "sign-in"}
      [:h1 "Sign in"]
      [:form {:class     "login-form"
@@ -62,7 +61,7 @@
       [:a {:href "/"} "Forgot your password?"]]]))
 
 
-(defn start-page
+(defn login-page
   "First view of the webpage"
   []
   [:div (login-form)])
@@ -117,7 +116,22 @@
 
 (defn home-page [state]
   [:div
-   [header]
-   [profile-sidebar state]
-   [user-feed state]
-   [contacts-list state]])
+   #_[header]
+   #_[profile-sidebar state]
+   #_[user-feed state]
+   #_[contacts-list state]
+   "hej"])
+
+
+(defmulti pages (fn[page _] page))
+(defmethod pages :home [_ _] [home-page])
+(defmethod pages :login [_ _] [login-page])
+
+
+(defn landing-page [state]
+  (prn state)
+  (reagent/with-let [active-page (:active-page state)
+                     user (:user state)]
+                    (if-not (nil? user)
+                      (pages @active-page @user)
+                      (pages :login nil))))
