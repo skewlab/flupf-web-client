@@ -1,7 +1,10 @@
 // Uncomment to import other sass or scss files
 @import 'index'
 @import 'globals'
-// @import 'profile';
+
+//
+@import 'sidebar'
+@import 'content'
 
 // You can use any sass features, like variables, for instance:
 $font-stack: 'Helvetica Neue', Verdana, Helvetica, Arial, sans-serif
@@ -70,124 +73,14 @@ header
       &:hover
         color: $color-theme
 
-// HOME VIEW //
-
-.wrapper
-  float: left
-  width: 100%
-  height: 100%
-
-  .user-home-view
-    float: left
-    width: 100%
-    height: 100%
-    display: table
-
-.feed-field
-  width: 80%
-  //float:        left
-  position: absolute
+// MAIN //
+main
+  position: relative
   box-sizing: border-box
-  padding: 3%
-  left: 20%
-
-  .left-column
-    width: 65%
-    float: left
-
-  .right-column
-    width: 35%
-    //float:      left
-    position: fixed
-    right: 0
-    padding: 0 0 0 3%
-    box-sizing: border-box
-
-// PROFILE SIDEBAR //
-
-.profile-info
-  background-color: white
-  // box-shadow: 5px 0px 5px -2px rgba(0, 0, 0, 0.1)
-  // float: left
-  position: fixed
-  width: 20%
-  height: 100%
-  padding: 2.5% 1%
-  box-sizing: border-box
-
-  img
-    margin-left: 10%
-    box-sizing: border-box
-    width: 80%
-    border-radius: 100%
-    padding: 5%
-
-  .profile-text-info
-    text-align: center
-
-  .user-profile-name
-    text-align: center
-    font-weight: 200
-
-  .user-description
-    text-align: center
-
-// USER FEED //
-
-.user-feed
+  padding: 0
+  margin: 0
   width: 100%
   float: left
-  box-sizing: border-box
 
-  .post
-    background-color: white
-    box-sizing: border-box
-    width: 100%
-    float: left
-    padding: 7% 5%
-    // box-shadow: 2px 2px 1px 1px rgba(0, 0, 0, 0.1)
-    border-radius: $box-border-radius
-    margin-bottom: 5%
 
-.post-content, .post-author
-  float: left
-  box-sizing: border-box
-  word-wrap: break-word
 
-.post-author
-  width: 38%
-
-.post-content
-  width: 62%
-
-.up-button
-  color: rgba(0, 0, 0, 0.3)
-  i
-    margin-right: 1%
-
-.active-up-button i
-  color: $color-theme
-
-// NAVIGATION MENU //
-.nav-menu
-  list-style-type: none
-  li
-    padding: 2% 0
-
-// CONTACTS LIST //
-
-.contacts-list
-  width: 100%
-  float: left
-  padding: 5%
-  background-color: white
-  border-radius: $box-border-radius
-  margin: 10% 0 0 0
-  box-sizing: border-box
-  h2
-    text-align: center
-    font-weight: 300
-
-.contact
-  box-sizing: border-box
-  width: 100%

@@ -76,21 +76,24 @@
         :aria-hidden true}]
    number])
 
+;-------------------------------------------
+;---------         Content         ---------
+;-------------------------------------------
+
 ;--- Post form ---
 (defn post-form
   ""
   []
-  [:form
-   [:textarea]
-   [:button "Post"]
-   ])
+  [:form {:class "post-form"}
+   [:textarea {:placeholder "What are you thinking about?"}]
+   [:button "Post"]])
 
 ;--- User feed ---
-
 (defn user-feed [state]
   (api/api-get state "posts/all")
   (fn []
     [:div {:class "user-feed"}
+     [post-form]
      (map (fn [post]
             ^{:key post} [:div {:class "post"}
                           [:div {:class "post-author"}
@@ -104,22 +107,93 @@
                           [up-button (:ups post)]])
           (:posts/all @state))]))
 
+(defn chat-picture
+  "Chat picture"
+  []
+  [:div {:class "chat-picture-wrapper"}
+   [:img ]])
 
-;--- Profile sidebar ---
+(defn chat-form
+  []
+  [:form {:class "chat-form-wrapper"}])
 
-(defn profile-sidebar [state]
+;; Box with a chat
+(defn chat-box
+  ""
+  []
+  [:div {:class "chat-wrapper"}
+   ;; Chat friend picture
+   [chat-picture]
+   ;; Chat form
+   [chat-form]
+
+   ])
+
+;; Box with all contacts
+(defn contacts-box
+  ""
+  [])
+
+(defn content
+  "Content view excludes siedbar"
+  [ state ]
+  [:div {:class "content"}
+   ;; Should contain the feed
+   [:div {:class "left-content-column"}
+    [user-feed state]]
+   [:div {:class "right-content-column"}
+    [chat-box]]
+   ;; Should contain the right field
+   ])
+
+
+
+
+
+
+;--- Sidebar ---
+
+;; Search
+(defn sidebar-search
+  ""
+  []
+  [:input {:placeholder "search"
+           :class       "sidebar-search"}])
+
+;; Profile
+(defn profile-info
+  "Profile info in the sidebar"
+  [ state user ]
+  [:div {:class "profile-info"}
+   [:img {:src (get-in @state [(keyword user) :avatar :String])
+          :alt "no avatar available"}]
+
+   [:h2 {:class "user-profile-name"} (get-in @state [(keyword user) :alias :String])]
+
+   [:p {:class "user-description"} (get-in @state [(keyword user) :description :String])]
+
+   [:ul
+    [:li (get-in @state [(keyword user) :website :String])]
+    [:li (get-in @state [(keyword user) :phonenumber :String])]]
+   ]
+  )
+
+(defn sidebar [state]
   (let [user "users/me"]
     (api/api-get state user)
     (fn []
-      [:div {:class "profile-info"}
+      [:div {:class "side-bar"}
 
-       [:img {:src (get-in @state [(keyword user) :avatar :String])
-              :alt "no avatar available"}]
-       [:h2 {:class "user-profile-name"} (get-in @state [(keyword user) :alias :String])]
-       [:p {:class "user-description"} (get-in @state [(keyword user) :description :String])]
+       [sidebar-search]
+       [profile-info state user]
+
        [:ul
-        [:li (get-in @state [(keyword user) :website :String])]
-        [:li (get-in @state [(keyword user) :phonenumber :String])]]])))
+        [:li "timeline"]
+        [:li "logout"]]
+
+       [:ul
+        [:li "settings"]
+        [:li "logout"]]])))
 
 
 
@@ -153,13 +227,20 @@
 
 
 (defn home-page [state]
-  [:div {:class "wrapper"}
+  [:main
    ;[header]
-   [:div {:class "user-home-view"}
-    [profile-sidebar state]
-    [:div {:class "feed-field"}
-     [:div {:class "left-column"}
-      [user-feed state]]
-     [:div {:class "right-column"}
-      [nav-menu]
-      [contacts-list state]]]]])
+
+    [sidebar state]
+
+    [content state]
+
+    ;;[:div {:class "feed-field"}
+
+     ;;[:div {:class "left-column"}
+      ;;[user-feed state]]
+
+     ;;[:div {:class "right-column"}
+      ;;[nav-menu]
+      ;;[contacts-list state]]]
+
+    ])
