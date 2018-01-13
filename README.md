@@ -1,7 +1,6 @@
 # Flupf web client
 Flupf social network
 
-## Config
 Start the project by running
 ```
 lein figwheel
@@ -21,3 +20,5 @@ To compile the sass files run
 lein sass auto
 ```
 from project root.
+
+## Config
