@@ -1,12 +1,10 @@
 @import url("https://fonts.googleapis.com/css?family=Montserrat");
 html {
-  height: 100%;
   width: 100%;
   margin: 0;
   padding: 0; }
 
 body {
-  height: 100%;
   width: 100%;
   margin: 0;
   padding: 0;
@@ -35,3 +33,10 @@ button, .button {
     color: white;
     transition: 0.15s ease-in-out;
     cursor: pointer; }
+
+.content-box {
+  border-radius: 4px;
+  background-color: white;
+  box-sizing: border-box;
+  float: left;
+  width: 100%; }

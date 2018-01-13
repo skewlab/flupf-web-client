@@ -67,6 +67,23 @@
   []
   [:div (login-form)])
 
+;--- Up button ---
+(defn up-button
+  ""
+  [number]
+  [:span {:class "up-button .active"}
+   [:i {:class       "fa fa-arrow-circle-up"
+        :aria-hidden true}]
+   number])
+
+;--- Post form ---
+(defn post-form
+  ""
+  []
+  [:form
+   [:textarea]
+   [:button "Post"]
+   ])
 
 ;--- User feed ---
 
@@ -82,9 +99,9 @@
                            [:h2 (:content post)]]
                           "author: " (:userid post)
                           [:br]
-                          "Date: " (:dade_created post)
+                          "Date: " (:date_created post)
                           [:br]
-                          [:p "Ups: " (:ups post)]])
+                          [up-button (:ups post)]])
           (:posts/all @state))]))
 
 
@@ -105,6 +122,24 @@
         [:li (get-in @state [(keyword user) :phonenumber :String])]]])))
 
 
+
+
+(defn nav-menu
+  ""
+  []
+  [:div {:class "content-box"}
+   [:ul {:class "nav-menu"}
+    [:li {} [:i {:class       "fa fa-home"
+                 :aria-hidden "true"}] " Home"]
+    [:li {} [:i {:class       "fa fa-group"
+                 :aria-hidden "true"}] " Connect"]
+    [:li {} [:i {:class       "fa fa-compass"
+                 :aria-hidden "true"}] " Explore"]
+    [:li {} [:i {:class       "fa fa-search"
+                 :aria-hidden "true"}] " Search"]
+    [:li {} [:i {:class       "fa fa-sign-out"
+                 :aria-hidden "true"}] " Sign out"]]])
+
 (defn contacts-list [state]
   (let [contacts "my-contacts"]
     (api/api-get state contacts)
@@ -119,11 +154,12 @@
 
 (defn home-page [state]
   [:div {:class "wrapper"}
-   [header]
+   ;[header]
    [:div {:class "user-home-view"}
     [profile-sidebar state]
     [:div {:class "feed-field"}
      [:div {:class "left-column"}
       [user-feed state]]
      [:div {:class "right-column"}
+      [nav-menu]
       [contacts-list state]]]]])

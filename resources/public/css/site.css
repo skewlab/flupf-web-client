@@ -1,12 +1,10 @@
 @import url("https://fonts.googleapis.com/css?family=Montserrat");
 html {
-  height: 100%;
   width: 100%;
   margin: 0;
   padding: 0; }
 
 body {
-  height: 100%;
   width: 100%;
   margin: 0;
   padding: 0;
@@ -35,6 +33,13 @@ button, .button {
     color: white;
     transition: 0.15s ease-in-out;
     cursor: pointer; }
+
+.content-box {
+  border-radius: 4px;
+  background-color: white;
+  box-sizing: border-box;
+  float: left;
+  width: 100%; }
 
 header {
   margin: 0;
@@ -106,21 +111,23 @@ header {
 
 .feed-field {
   width: 80%;
-  float: left;
+  position: absolute;
   box-sizing: border-box;
-  padding: 3%; }
+  padding: 3%;
+  left: 20%; }
   .feed-field .left-column {
     width: 65%;
     float: left; }
   .feed-field .right-column {
     width: 35%;
-    float: left;
+    position: fixed;
+    right: 0;
     padding: 0 0 0 3%;
     box-sizing: border-box; }
 
 .profile-info {
   background-color: white;
-  float: left;
+  position: fixed;
   width: 20%;
   height: 100%;
   padding: 2.5% 1%;
@@ -162,6 +169,19 @@ header {
 
 .post-content {
   width: 62%; }
+
+.up-button {
+  color: rgba(0, 0, 0, 0.3); }
+  .up-button i {
+    margin-right: 1%; }
+
+.active-up-button i {
+  color: #ef91b4; }
+
+.nav-menu {
+  list-style-type: none; }
+  .nav-menu li {
+    padding: 2% 0; }
 
 .contacts-list {
   width: 100%;
