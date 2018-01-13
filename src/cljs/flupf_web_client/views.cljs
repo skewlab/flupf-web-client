@@ -107,11 +107,27 @@
                           [up-button (:ups post)]])
           (:posts/all @state))]))
 
+(defn chat-message
+  "Chat message"
+  [message user]
+  [:div {:class "message-wrapper "}
+   [:div {:class (str "message " user)}
+    message]
+   ])
+
 (defn chat-picture
   "Chat picture"
   []
   [:div {:class "chat-picture-wrapper"}
-   [:img ]])
+   [chat-message "Hello" "me"]
+   [chat-message "Hi :)" "friend"]
+   [chat-message "How are you?" "me"]
+   [chat-message "Fine! And you?" "friend"]
+   [chat-message "Good thanks :)" "me"]
+   [chat-message "Do you want to code clojure?" "friend"]
+   [chat-message "All the time" "me"]
+   [chat-message "Looo ooooo ooooo ooooo ooooo oong mess sssss sssage!!!!!" "friend"]
+   ])
 
 (defn chat-form
   []
@@ -136,7 +152,7 @@
 
 (defn content
   "Content view excludes siedbar"
-  [ state ]
+  [state]
   [:div {:class "content"}
    ;; Should contain the feed
    [:div {:class "left-content-column"}
@@ -163,7 +179,7 @@
 ;; Profile
 (defn profile-info
   "Profile info in the sidebar"
-  [ state user ]
+  [state user]
   [:div {:class "profile-info"}
    [:img {:src (get-in @state [(keyword user) :avatar :String])
           :alt "no avatar available"}]
@@ -230,17 +246,17 @@
   [:main
    ;[header]
 
-    [sidebar state]
+   [sidebar state]
 
-    [content state]
+   [content state]
 
-    ;;[:div {:class "feed-field"}
+   ;;[:div {:class "feed-field"}
 
-     ;;[:div {:class "left-column"}
-      ;;[user-feed state]]
+   ;;[:div {:class "left-column"}
+   ;;[user-feed state]]
 
-     ;;[:div {:class "right-column"}
-      ;;[nav-menu]
-      ;;[contacts-list state]]]
+   ;;[:div {:class "right-column"}
+   ;;[nav-menu]
+   ;;[contacts-list state]]]
 
-    ])
+   ])

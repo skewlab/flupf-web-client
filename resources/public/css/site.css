@@ -224,13 +224,34 @@ button, .button {
   width: 100%;
   float: left;
   background-color: #e4e4ec;
-  height: 150px; }
+  border-top-left-radius: 7px;
+  border-top-right-radius: 7px;
+  padding: 6% 3% 3% 3%;
+  box-sizing: border-box;
+  height: 279px;
+  overflow-y: scroll; }
+  .chat-picture-wrapper .message-wrapper {
+    width: 100%;
+    float: left;
+    margin: 1% 0; }
+    .chat-picture-wrapper .message-wrapper .message {
+      background-color: white;
+      border-radius: 7px;
+      width: auto;
+      padding: 2% 6%;
+      max-width: 60%; }
+    .chat-picture-wrapper .message-wrapper .me {
+      float: right; }
+    .chat-picture-wrapper .message-wrapper .friend {
+      float: left; }
 
 .chat-form-wrapper {
   width: 100%;
   float: left;
   background-color: white;
-  height: 150px; }
+  height: 150px;
+  border-bottom-left-radius: 7px;
+  border-bottom-right-radius: 7px; }
 
 .contacts-list {
   width: 100%;

@@ -87,13 +87,34 @@
   width: 100%
   float: left
   background-color: $color-background-dark
-  height: 150px
+  border-top-left-radius: $box-border-radius
+  border-top-right-radius: $box-border-radius
+  padding: $content-box-padding
+  box-sizing: border-box
+  height: 279px
+  overflow-y: scroll
+  .message-wrapper
+    width: 100%
+    float: left
+    margin: 1% 0
+    .message
+      background-color: white
+      border-radius: $box-border-radius
+      width: auto
+      padding: 2% 6%
+      max-width: 60%
+    .me
+      float: right
+    .friend
+      float: left
 
 .chat-form-wrapper
   width: 100%
   float: left
   background-color: white
   height: 150px
+  border-bottom-left-radius: $box-border-radius
+  border-bottom-right-radius: $box-border-radius
 
 // CONTACTS LIST //
 
