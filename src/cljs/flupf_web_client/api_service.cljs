@@ -2,21 +2,22 @@
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [cljs-http.client :as http]
             [ajax.core :as ajax]
-            [cljs.core.async :refer [<! put!]]))
+            [cljs.core.async :refer [<! put!]]
+            [flupf-web-client.session :as session]))
 
 
 
 
-(defn authenticate [state response-chanel]
+(defn authenticate [response-chanel]
   (ajax/GET "http://localhost:8000/api/auth"
             {:handler          (fn [res]
                                  (println res)
-                                 (swap! state assoc :authenticated true)
-                                 (put! response-chanel [state :authenticate true]))
+                                 (session/put! :authenticated true)
+                                 (put! response-chanel [:authenticate true]))
              :error-handler    (fn [error]
                                  (println error)
-                                 (swap! state assoc :authenticated false)
-                                 (put! response-chanel [state :authenticate false]))
+                                 (session/put! :authenticated false)
+                                 (put! response-chanel [:authenticate false]))
              :with-credentials true}))
 
 

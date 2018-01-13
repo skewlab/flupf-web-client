@@ -2,7 +2,8 @@
   (:require [flupf-web-client.api-service :as api]
             [reagent.core :as reagent]
             [secretary.core :as secretary :include-macros true]
-            [accountant.core :as accountant]))
+            [accountant.core :as accountant]
+            [flupf-web-client.session :as session]))
 
 
 
@@ -29,14 +30,14 @@
 (defn input-element
   "An input element which updates its value on change"
   [id name type placeholder value]
-  [:input {:id           id
-           :name         name
-           :placeholder  placeholder
-           :class        "form-control"
-           :type         type
-           :required     ""
-           :value        @value
-           :on-change    #(reset! value (-> % .-target .-value))}])
+  [:input {:id          id
+           :name        name
+           :placeholder placeholder
+           :class       "form-control"
+           :type        type
+           :required    ""
+           :value       @value
+           :on-change   #(reset! value (-> % .-target .-value))}])
 
 
 (defn login-form
@@ -115,20 +116,12 @@
 
 
 (defn home-page [state]
-  [:div
-   [header]
-   #_[profile-sidebar state]
-   #_[user-feed state]
-   #_[contacts-list state]])
+  (fn []
+    [:div
+     [header]
+     [profile-sidebar state]
+     [user-feed state]
+     [contacts-list state]]))
 
 
-(defmulti pages (fn[state page _] page))
-(defmethod pages :home [state _ _] [home-page state])
-(defmethod pages :login [state _ _] [login-page state])
 
-
-(defn landing-page [state]
-  (reagent/with-let [active-page (:active-page @state)]
-                    (if (:authenticated @state)
-                      (pages state active-page nil)
-                      (pages state :login nil))))

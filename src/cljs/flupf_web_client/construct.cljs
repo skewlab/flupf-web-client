@@ -3,5 +3,5 @@
 
 (defn create-state []
   "initiate state"
-  (reagent/atom {:active-page   :home
+  (reagent/atom {:active-page   :login
                  :authenticated nil}))
