@@ -18,11 +18,10 @@
 (def app-state (create-state))
 (def response-chanel (chan))
 
-
-
-
 (defn set-page! [page]
   (session/put! :current-page page))
+
+;--- Uri Routes ---
 
 (defn app-routes []
   (secretary/set-config! :prefix "#")
@@ -31,11 +30,8 @@
                       (println "root"))
 
   (secretary/defroute "/home" []
-                      (println "ihome " (session/get :authenticated))
-                      (if (session/get :authenticated)
-                        (set-page! :home)
-                        (set-page! :login)))
-
+                      (println "i home defroute, core auth is: " (session/get :authenticated))
+                      (set-page! :home))
   )
 
 (defn hook-browser-navigation! []
@@ -46,11 +42,22 @@
         (secretary/dispatch! (.-token event))))
     (.setEnabled true)))
 
+
+;--- Routing views ---
+
 (defmulti active-page #(session/get :current-page))
-(defmethod active-page :home [] [home-page session/state])
-(defmethod active-page :login [] [login-page session/state])
+
+(defmethod active-page :home []
+  (if (session/get :authenticated)
+  [home-page]
+  [login-page]))
+
+(defmethod active-page :login [] [login-page])
+
 (defmethod active-page :loading [] [:div "loading"])
 
+
+; --- Initial rendering ---
 
 (defn mount-root []
   "render root component"
@@ -65,6 +72,7 @@
           (set-page! :home)
           (set-page! :login)))
 
-        ))
+        )
   (hook-browser-navigation!)
   (mount-root))
+

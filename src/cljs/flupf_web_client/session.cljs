@@ -5,6 +5,7 @@
 (def state (atom {:authenticated false
                   :current-page :loading}))
 
+
 (defn get
   "Get the key's value from the session, returns nil if it doesn't exist."
   [k & [default]]
@@ -71,3 +72,6 @@
   (clojure.core/swap!
     state
     #(apply (partial update-in % ks f) args)))
+
+
+
