@@ -12,7 +12,7 @@ Before this works you will have to make sure you have the correct setup.
 ## Setup
 
 ### Backend
-The client is now dependent on our backend called *[go-back](https://github.com/skewlab/go-back)*
+The client is now dependent on our backend called *[go-back](https://github.com/skewlab/go-back)*.
 See instructions there for how to set up the go-back backend.
 
 ### Sass compile
