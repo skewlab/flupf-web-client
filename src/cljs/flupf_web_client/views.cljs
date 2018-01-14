@@ -44,7 +44,7 @@
 
 (defn login-form
   "Login form"
-  [state]
+  []
   (let [email-address (reagent/atom nil)
         password (reagent/atom nil)
         credentials (reagent/atom nil)]
@@ -68,7 +68,7 @@
 (defn login-page
   "First view of the webpage"
   [state]
-  [:div (login-form state)])
+  [:div (login-form)])
 
 (defn sign-up-page []
   (let [sign-up-info (reagent/atom {:alias           (reagent/atom nil)
@@ -97,19 +97,36 @@
      [:span {:class "full-link-wrapper"}]]))
 
 
+;--- Up button ---
+(defn up-button
+  ""
+  [number]
+  [:span {:class "up-button .active"}
+   [:i {:class       "fa fa-arrow-circle-up"
+        :aria-hidden true}]
+   number])
+
+
 ;--- Post component ---
+
+
 (defn post-component []
   (let [post (reagent/atom nil)]
-    [:div {:class "post-component"}
-     [:form {:class     "post-component"
+    [:div
+     [:form {:class     "post-form"
              :on-submit (fn [e] (.preventDefault e))}
-      [input-element "post-component" "post-component" "text" "Whats on yoour mind...?" post]
+      [:textarea {:id          "post"
+                  :name        "post"
+                  :placeholder "What are you thinking about?"
+                  :type        "text"
+                  :on-change   #(reset! post (-> % .-target .-value))}]
       [:button {:type     "sumbit"
                 :class    "post-btn"
-                :on-click #(api/api-post {:endpoint "posts"
-                                          :keyword  :post-response
-                                          :params   {:userid  (session/get-in [:profile :id])
-                                                     :content @post}})} "post"]]]))
+                :on-click #(api/api-post
+                             {:endpoint "posts"
+                              :keyword  :post-response
+                              :params   {:userid  (session/get-in [:profile :id])
+                                         :content @post}})} "Post"]]]))
 
 
 ;--- User feed ---
@@ -118,23 +135,32 @@
   (api/api-get {:endpoint "posts/all"
                 :keyword  :user-feed})
   (fn []
-    [:div {:class "profile-feed"}
+    [:div {:class "user-feed"}
      [:div (post-component)]
      (map (fn [post]
             ^{:key post} [:div {:class "post"}
-                          [:p "ID: " (:id post)]
-                          [:h2 (:content post)]
+                          [:div {:class "post-author"}
+                           [:p "ID: " (:id post)]]
+                          [:div {:class "post-content"}
+                           [:h2 (:content post)]]
                           "author: " (:userid post)
                           [:br]
-                          "Date: " (:dade_created post)
+                          "Date: " (:date_created post)
                           [:br]
-                          [:p "Ups: " (:ups post)]])
+                          [up-button (:ups post)]])
           (session/get :user-feed))]))
 
 
-;--- Profile sidebar ---
+;--- sidebar ---
 
-(defn profile-sidebar []
+;; Search
+(defn sidebar-search
+  ""
+  []
+  [:input {:placeholder "search"
+           :class       "sidebar-search"}])
+
+(defn profile-info []
   [:div {:class "profile-info"}
    [:img {:src (session/get-in [:profile :avatar :String])
           :alt "no avatar available"}]
@@ -144,6 +170,16 @@
     [:li (session/get-in [:profile :website :String])]
     [:li (session/get-in [:profile :phonenumber :String])]]])
 
+(defn sidebar []
+  [:div {:class "side-bar"}
+   [sidebar-search]
+   [profile-info]
+   [:ul
+    [:li "timeline"]
+    [:li "logout"]]
+   [:ul
+    [:li "settings"]
+    [:li "logout"]]])
 
 (defn contacts-list []
   (let [contacts "my-contacts"]
@@ -156,12 +192,23 @@
                                [:h2 (get-in contact [:alias :String])]]
               ) (session/get :contacts))])))
 
+(defn content
+  "Content view excludes siedbar"
+  []
+  [:div {:class "content"}
+   ;; Should contain the feed
+   [:div {:class "left-content-column"}
+    [user-feed]]
+   [:div {:class "right-content-column"}
+    [contacts-list]]
+   ;; Should contain the right field
+   ])
+
 
 (defn home-page []
   (fn []
     [:div
      [header]
-     [profile-sidebar]
-     [user-feed]
-     [contacts-list]]))
+     [sidebar]
+     [content]]))
 

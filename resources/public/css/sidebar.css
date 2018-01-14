@@ -38,3 +38,26 @@ button, .button {
   box-sizing: border-box;
   float: left;
   width: 100%; }
+
+.side-bar {
+  width: 20%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: white;
+  padding: 6% 3% 3% 3%;
+  box-sizing: border-box; }
+
+.profile-info {
+  width: 100%;
+  float: left; }
+  .profile-info img {
+    box-sizing: border-box;
+    width: 60%;
+    border-radius: 100%; }
+  .profile-info .user-profile-name {
+    font-weight: 500; }
+  .profile-info .user-description {
+    font-weight: 300;
+    color: #e4e4ec; }
