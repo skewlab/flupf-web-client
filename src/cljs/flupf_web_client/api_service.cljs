@@ -18,6 +18,8 @@
             {:handler          (fn [res]
                                  #_(println res)
                                  (session/put! :authenticated true)
+                                 (api-get {:endpoint "users/me"
+                                           :keyword  :userid})
                                  (put! response-chanel [:authenticate true]))
              :error-handler    (fn [error]
                                  (println error)
@@ -26,10 +28,11 @@
              :with-credentials true}))
 
 
-(defn api-get [endpoint]
+(defn api-get [{endpoint :endpoint
+                keyword  :keyword}]
   (ajax/GET (str api-url endpoint)
             {:handler          (fn [response]
-                                 (session/put! (keyword endpoint) response))
+                                 (session/put! keyword response))
              :error-handler    #(error-handler %)
              :with-credentials true
              :response-format  :json
@@ -43,7 +46,7 @@
               :handler          (fn [response]
                                   (if (= endpoint "signin")
                                     (do (session/put! :authenticated true)
-                                    (session/put! :current-page :home))
+                                        (session/put! :current-page :home))
                                     nil)
                                   (session/put! (keyword endpoint) response))
               :error-handler    #(error-handler %)

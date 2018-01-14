@@ -66,10 +66,22 @@
   [:div (login-form state)])
 
 
+;--- Post component ---
+(defn post-component []
+  (let [post (atom nil)]
+    [:div {:class "post-component"}
+     [input-element "post-component" "post-component" "text" "Whats on yoour mind...?" post]
+     [:button {:class    "post-btn"
+               :on-click #(api/api-post "posts" {:userid  "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" ;fix in backend so uid is set from session
+                                                 :content @post})} "post"]]
+    ))
+
+
 ;--- User feed ---
 
 (defn user-feed [state]
-  (api/api-get "posts/all")
+  (api/api-get {:endpoint "posts/all"
+                :keyword  :user-feed})
   (fn []
     [:div {:class "profile-feed"}
      (map (fn [post]
@@ -81,35 +93,37 @@
                           "Date: " (:dade_created post)
                           [:br]
                           [:p "Ups: " (:ups post)]])
-          (session/get :posts/all))]))
+          (session/get :user-feed))]))
 
 
 ;--- Profile sidebar ---
 
 (defn profile-sidebar []
   (let [user "users/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"]
-    (api/api-get user)
+    (api/api-get {:endpoint user
+                  :keyword  :profile})
     (fn []
       [:div {:class "profile-info"}
 
-       [:img {:src (session/get-in [(keyword user) :avatar :String])
+       [:img {:src (session/get-in [:profile :avatar :String])
               :alt "no avatar available"}]
-       [:h2 (session/get-in [(keyword user) :alias :String])]
+       [:h2 (session/get-in [:profile :alias :String])]
        [:ul
-        [:li (session/get-in [(keyword user) :description :String])]
-        [:li (session/get-in [(keyword user) :website :String])]
-        [:li (session/get-in [(keyword user) :phonenumber :String])]]])))
+        [:li (session/get-in [:profile :description :String])]
+        [:li (session/get-in [:profile :website :String])]
+        [:li (session/get-in [:profile :phonenumber :String])]]])))
 
 
 (defn contacts-list [state]
   (let [contacts "my-contacts"]
-    (api/api-get contacts)
+    (api/api-get {:endpoint contacts
+                  :keyword  :contacts})
     (fn []
       [:div {:class "contacts-list"}
        (map (fn [contact]
               ^{:key contact} [:div {:class "contact"}
                                [:h2 (get-in contact [:alias :String])]]
-              ) (session/get (keyword contacts)))])))
+              ) (session/get :contacts))])))
 
 
 (defn home-page []
@@ -117,6 +131,6 @@
     [:div
      [header]
      [profile-sidebar]
-     [user-feed ]
-     [contacts-list ]]))
+     [user-feed]
+     [contacts-list]]))
 
