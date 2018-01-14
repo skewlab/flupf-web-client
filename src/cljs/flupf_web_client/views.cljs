@@ -80,8 +80,10 @@
       [input-element "post-component" "post-component" "text" "Whats on yoour mind...?" post]
       [:button {:type     "sumbit"
                 :class    "post-btn"
-                :on-click #(api/api-post "posts" {:userid  "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" ;fix in backend so uid is set from session
-                                                  :content @post})} "post"]]]))
+                :on-click #(api/api-post {:endpoint "posts"
+                                          :keyword  :post-response
+                                          :params   {:userid  "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" ;fix in backend so uid is set from session
+                                                     :content @post}})} "post"]]]))
 
 
 ;--- User feed ---
