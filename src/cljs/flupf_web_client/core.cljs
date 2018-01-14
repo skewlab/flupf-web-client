@@ -32,6 +32,10 @@
   (secretary/defroute "/home" []
                       (println "i home defroute, core auth is: " (session/get :authenticated))
                       (set-page! :home))
+
+  (secretary/defroute "/home" []
+                      (println "i login defroute, core auth is: " (session/get :authenticated))
+                      (set-page! :login))
   )
 
 (defn hook-browser-navigation! []
@@ -69,8 +73,8 @@
   (go (let [[name response] (<! response-chanel)]
         (app-routes)
         (if (session/get :authenticated)
-          (set-page! :home)
-          (set-page! :login)))
+          (secretary/dispatch! "/home")
+          (secretary/dispatch! "/login")))
 
         )
   (hook-browser-navigation!)
