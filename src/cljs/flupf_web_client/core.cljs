@@ -3,7 +3,8 @@
   (:require [reagent.core :as reagent]
             [cljs.core.async :refer [<! chan put!]]
             [flupf-web-client.views :refer [home-page
-                                            login-page]]
+                                            login-page
+                                            sign-up-page]]
             [flupf-web-client.construct :refer [create-state]]
             [flupf-web-client.api-service :as api]
             [secretary.core :as secretary :include-macros true]
@@ -33,9 +34,13 @@
                       (println "i home defroute, core auth is: " (session/get :authenticated))
                       (set-page! :home))
 
-  (secretary/defroute "/home" []
+  (secretary/defroute "/login" []
                       (println "i login defroute, core auth is: " (session/get :authenticated))
                       (set-page! :login))
+
+  (secretary/defroute "/signup" []
+                      (println "i signup defroute, core auth is: " (session/get :authenticated))
+                      (set-page! :signup))
   )
 
 (defn hook-browser-navigation! []
@@ -57,6 +62,8 @@
     [login-page]))
 
 (defmethod active-page :login [] [login-page])
+
+(defmethod active-page :signup [] [sign-up-page])
 
 (defmethod active-page :loading [] [:div "loading"])
 
