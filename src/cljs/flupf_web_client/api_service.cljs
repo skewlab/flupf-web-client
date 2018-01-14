@@ -39,16 +39,18 @@
              :keywords?        true}))
 
 
-(defn api-post [endpoint params]
+(defn api-post [{endpoint :endpoint keyword :keyword params :params}]
   (print params)
   (ajax/POST (str api-url endpoint)
              {:params           params
               :handler          (fn [response]
-                                  (if (= endpoint "signin")
-                                    (do (session/put! :authenticated true)
-                                        (session/put! :current-page :home))
-                                    nil)
-                                  (session/put! (keyword endpoint) response))
+                                  (cond (= endpoint "signin")
+                                        (do (session/put! :authenticated true)
+                                            (session/put! :current-page :home))
+                                        (= endpoint "signout")
+                                        (do (session/put! :authenticated false)
+                                            (session/put! :current-page :login)))
+                                  (session/put! keyword response))
               :error-handler    #(error-handler %)
               :with-credentials true
               :format           (ajax/json-request-format)
