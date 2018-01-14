@@ -1,69 +1,78 @@
 (ns flupf-web-client.core
   (:require-macros [cljs.core.async.macros :refer [go]])
-  (:require [reagent.core :as reagent :refer [atom]]
-            [secretary.core :as secretary :include-macros true]
-            [accountant.core :as accountant]
-            [flupf-web-client.views :as views]
+  (:require [reagent.core :as reagent]
+            [cljs.core.async :refer [<! chan put!]]
+            [flupf-web-client.views :refer [home-page
+                                            login-page]]
+            [flupf-web-client.construct :refer [create-state]]
             [flupf-web-client.api-service :as api]
-            [cljs.core.async :refer [<!]]))
+            [secretary.core :as secretary :include-macros true]
+            [goog.events :as events]
+            [goog.history.EventType :as EventType]
+            [reagent.core :as reagent]
+            [flupf-web-client.session :as session])
+  (:import goog.History))
 
 
-(defonce app-state (atom {:authenticated false
-                          :user-id       nil}))
-;; -------------------------
+;; --- Initialize app ---
+(def app-state (create-state))
+(def response-chanel (chan))
+
+(defn set-page! [page]
+  (session/put! :current-page page))
+
+;--- Uri Routes ---
+
+(defn app-routes []
+  (secretary/set-config! :prefix "#")
+
+  (secretary/defroute "/" []
+                      (println "root"))
+
+  (secretary/defroute "/home" []
+                      (println "i home defroute, core auth is: " (session/get :authenticated))
+                      (set-page! :home))
+  )
+
+(defn hook-browser-navigation! []
+  (doto (History.)
+    (events/listen
+      EventType/NAVIGATE
+      (fn [event]
+        (secretary/dispatch! (.-token event))))
+    (.setEnabled true)))
 
 
-(defn about-page [state]
-  [:div [:h2 "About flupf-web-client"]
-   [:div [:a {:href "/"} "go to the home page"]]])
+;--- Routing views ---
 
-;; -------------------------
+(defmulti active-page #(session/get :current-page))
 
+(defmethod active-page :home []
+  (if (session/get :authenticated)
+  [home-page]
+  [login-page]))
 
+(defmethod active-page :login [] [login-page])
 
-;; Routes
-
-(def page (atom #'views/start-page))
-
-(defn current-page []
-  [:div [@page]])
+(defmethod active-page :loading [] [:div "loading"])
 
 
-(secretary/defroute "/" []
-                    (if (:authenticated @app-state)
-                      (secretary/dispatch! "/home")
-                      (reset! page #'views/start-page)))
+; --- Initial rendering ---
 
-(secretary/defroute "/home" []
-                    (prn (:authenticated @app-state))
-                    (if (:authenticated @app-state)
-                      (reset! page #(views/home-page app-state))))
-
-(secretary/defroute "/about" []
-                    (reset! page #'about-page))
-
-
-;; -------------------------
-;; Initialize app
 (defn mount-root []
-  (reagent/render [current-page] (.getElementById js/document "app")))
+  "render root component"
+  (reagent/render [active-page] (.getElementById js/document "app")))
 
-(defn signed-in? [state]
-  (go (let [res (<! (api/authenticate state))]
-        (if (= res 200)
-          (swap! state assoc :authenticated true)
-          (swap! state assoc :authenticated false))
-        (accountant/configure-navigation!
-          {:nav-handler
-           (fn [path]
-             (secretary/dispatch! path))
-           :path-exists?
-           (fn [path]
-             (secretary/locate-route path))})
-        (accountant/dispatch-current!)
-        (mount-root)
-        )))
 
 (defn init! []
-  (signed-in? app-state)
-  )
+  (api/authenticate response-chanel)
+  (go (let [[name response] (<! response-chanel)]
+        (app-routes)
+        (if (session/get :authenticated)
+          (set-page! :home)
+          (set-page! :login)))
+
+        )
+  (hook-browser-navigation!)
+  (mount-root))
+

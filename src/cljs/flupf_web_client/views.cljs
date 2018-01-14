@@ -1,8 +1,9 @@
 (ns flupf-web-client.views
   (:require [flupf-web-client.api-service :as api]
-            [reagent.core :as reagent :refer [atom]]
+            [reagent.core :as reagent]
             [secretary.core :as secretary :include-macros true]
-            [accountant.core :as accountant]))
+            [accountant.core :as accountant]
+            [flupf-web-client.session :as session]))
 
 
 
@@ -22,30 +23,28 @@
     "My Profile"]
    [:a {:href       "/home"
         :class-name "link-left link"}
-    "Start"]]
-  )
+    "Start"]])
 
 ;--- LOGIN PAGE ---
 (defn input-element
   "An input element which updates its value on change"
   [id name type placeholder value]
-  [:input {:id           id
-           :name         name
-           :placeholder  placeholder
-           :class        "form-control"
-           :type         type
-           :required     ""
-           :autocomplete "email"
-           :value        @value
-           :on-change    #(reset! value (-> % .-target .-value))}])
+  [:input {:id          id
+           :name        name
+           :placeholder placeholder
+           :class       "form-control"
+           :type        type
+           :required    ""
+           :value       @value
+           :on-change   #(reset! value (-> % .-target .-value))}])
 
 
 (defn login-form
   "Login form"
-  []
-  (let [email-address (atom nil)
-        password (atom nil)
-        credentials (atom nil)]
+  [state]
+  (let [email-address (reagent/atom nil)
+        password (reagent/atom nil)
+        credentials (reagent/atom nil)]
     [:div {:class "sign-in"}
      [:h1 "Sign in"]
      [:form {:class     "login-form"
@@ -55,23 +54,22 @@
       [:input {:type     "submit"
                :value    "sign in"
                :on-click (fn []
-                           (api/api-post credentials "signin" {:email    @email-address
-                                                               :password @password})
-                           (secretary/dispatch! "/home"))}]]
+                           (api/api-post "signin" {:email    @email-address
+                                                   :password @password}))}]]
      [:span {:class "full-link-wrapper"}
       [:a {:href "/"} "Forgot your password?"]]]))
 
 
-(defn start-page
+(defn login-page
   "First view of the webpage"
-  []
-  [:div (login-form)])
+  [state]
+  [:div (login-form state)])
 
 
 ;--- User feed ---
 
 (defn user-feed [state]
-  (api/api-get state "posts/all")
+  (api/api-get "posts/all")
   (fn []
     [:div {:class "profile-feed"}
      (map (fn [post]
@@ -83,41 +81,42 @@
                           "Date: " (:dade_created post)
                           [:br]
                           [:p "Ups: " (:ups post)]])
-          (:posts/all @state))]))
+          (session/get :posts/all))]))
 
 
 ;--- Profile sidebar ---
 
-(defn profile-sidebar [state]
+(defn profile-sidebar []
   (let [user "users/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"]
-    (api/api-get state user)
+    (api/api-get user)
     (fn []
       [:div {:class "profile-info"}
 
-       [:img {:src (get-in @state [(keyword user) :avatar :String])
+       [:img {:src (session/get-in [(keyword user) :avatar :String])
               :alt "no avatar available"}]
-       [:h2 (get-in @state [(keyword user) :alias :String])]
+       [:h2 (session/get-in [(keyword user) :alias :String])]
        [:ul
-        [:li (get-in @state [(keyword user) :description :String])]
-        [:li (get-in @state [(keyword user) :website :String])]
-        [:li (get-in @state [(keyword user) :phonenumber :String])]]])))
+        [:li (session/get-in [(keyword user) :description :String])]
+        [:li (session/get-in [(keyword user) :website :String])]
+        [:li (session/get-in [(keyword user) :phonenumber :String])]]])))
 
 
 (defn contacts-list [state]
   (let [contacts "my-contacts"]
-    (api/api-get state contacts)
+    (api/api-get contacts)
     (fn []
       [:div {:class "contacts-list"}
        (map (fn [contact]
               ^{:key contact} [:div {:class "contact"}
                                [:h2 (get-in contact [:alias :String])]]
-              ) ((keyword contacts) @state))
-       ])))
+              ) (session/get (keyword contacts)))])))
 
 
-(defn home-page [state]
-  [:div
-   [header]
-   [profile-sidebar state]
-   [user-feed state]
-   [contacts-list state]])
+(defn home-page []
+  (fn []
+    [:div
+     [header]
+     [profile-sidebar]
+     [user-feed ]
+     [contacts-list ]]))
+
