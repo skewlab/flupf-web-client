@@ -70,6 +70,32 @@
   [state]
   [:div (login-form state)])
 
+(defn sign-up-page []
+  (let [sign-up-info (reagent/atom {:alias           (reagent/atom nil)
+                                    :email           (reagent/atom nil)
+                                    :password        (reagent/atom nil)
+                                    :repeat-password (reagent/atom nil)})]
+    [:div {:class "sign-up"}
+     [:h1 "Sign up"]
+     [:form {:class     "signup-form"
+             :on-submit (fn [e] (.preventDefault e))}
+      [input-element "alias" "alias" "alias" "alias" (:alias @sign-up-info)]
+      [input-element "email" "email" "email" "email" (:email @sign-up-info)]
+      [input-element "password" "password" "password" "password" (:password @sign-up-info)]
+      [input-element "repeat-password" "repeat-password" "repeat-password" "repeat-password" (:repeat-password @sign-up-info)]
+      [:input {:type     "submit"
+               :value    "sign up"
+               :on-click (fn []
+                           (api/api-post
+                             {:endpoint "users"
+                              :keyword  :signup-response
+                              :params   {:email    @(:email @sign-up-info)
+                                         :alias    @(:alias @sign-up-info)
+                                         :password @(:password @sign-up-info)
+                                         ;:repeat-password @(:repeat-password @sign-up-info)
+                                         }}))}]]
+     [:span {:class "full-link-wrapper"}]]))
+
 
 ;--- Post component ---
 (defn post-component []
@@ -82,7 +108,7 @@
                 :class    "post-btn"
                 :on-click #(api/api-post {:endpoint "posts"
                                           :keyword  :post-response
-                                          :params   {:userid  "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" ;fix in backend so uid is set from session
+                                          :params   {:userid  (session/get-in [:profile :id])
                                                      :content @post}})} "post"]]]))
 
 
@@ -109,19 +135,14 @@
 ;--- Profile sidebar ---
 
 (defn profile-sidebar []
-  (let [user "users/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"]
-    (api/api-get {:endpoint user
-                  :keyword  :profile})
-    (fn []
-      [:div {:class "profile-info"}
-
-       [:img {:src (session/get-in [:profile :avatar :String])
-              :alt "no avatar available"}]
-       [:h2 (session/get-in [:profile :alias :String])]
-       [:ul
-        [:li (session/get-in [:profile :description :String])]
-        [:li (session/get-in [:profile :website :String])]
-        [:li (session/get-in [:profile :phonenumber :String])]]])))
+  [:div {:class "profile-info"}
+   [:img {:src (session/get-in [:profile :avatar :String])
+          :alt "no avatar available"}]
+   [:h2 (session/get-in [:profile :alias :String])]
+   [:ul
+    [:li (session/get-in [:profile :description :String])]
+    [:li (session/get-in [:profile :website :String])]
+    [:li (session/get-in [:profile :phonenumber :String])]]])
 
 
 (defn contacts-list []

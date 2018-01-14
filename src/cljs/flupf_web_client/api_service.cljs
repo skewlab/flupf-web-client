@@ -19,7 +19,7 @@
                                  #_(println res)
                                  (session/put! :authenticated true)
                                  (api-get {:endpoint "users/me"
-                                           :keyword  :userid})
+                                           :keyword  :profile})
                                  (put! response-chanel [:authenticate true]))
              :error-handler    (fn [error]
                                  (println error)
@@ -55,5 +55,5 @@
               :with-credentials true
               :format           (ajax/json-request-format)
               :response-format  :json
-              :keywords?        true}))
+              :keywords?        false}))
 
