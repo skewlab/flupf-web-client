@@ -13,21 +13,6 @@
 (defn error-handler [error]
   (println error))
 
-(defn authenticate [response-chanel]
-  (ajax/GET "http://localhost:8000/api/auth"
-            {:handler          (fn [res]
-                                 #_(println res)
-                                 (session/put! :authenticated true)
-                                 (api-get {:endpoint "users/me"
-                                           :keyword  :profile})
-                                 (put! response-chanel [:authenticate true]))
-             :error-handler    (fn [error]
-                                 (println error)
-                                 (session/put! :authenticated false)
-                                 (put! response-chanel [:authenticate false]))
-             :with-credentials true}))
-
-
 (defn api-get [{endpoint :endpoint
                 keyword  :keyword}]
   (ajax/GET (str api-url endpoint)
@@ -56,4 +41,21 @@
               :format           (ajax/json-request-format)
               :response-format  :json
               :keywords?        false}))
+
+(defn authenticate [response-chanel]
+  (ajax/GET "http://localhost:8000/api/auth"
+            {:handler          (fn [res]
+                                 #_(println res)
+                                 (session/put! :authenticated true)
+                                 (api-get {:endpoint "users/me"
+                                           :keyword  :profile})
+                                 (put! response-chanel [:authenticate true]))
+             :error-handler    (fn [error]
+                                 (println error)
+                                 (session/put! :authenticated false)
+                                 (put! response-chanel [:authenticate false]))
+             :with-credentials true}))
+
+
+
 
