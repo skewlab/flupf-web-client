@@ -10,7 +10,10 @@
 ;--- HEADER ---
 
 (defn sign-out [username]
-  (println username "signed out"))
+  (api/api-post {:endpoint "signout"
+                 :keyword  :signout-response
+                 :params   {}})
+  (println "signed out"))
 
 
 (defn header []
@@ -54,8 +57,10 @@
       [:input {:type     "submit"
                :value    "sign in"
                :on-click (fn []
-                           (api/api-post "signin" {:email    @email-address
-                                                   :password @password}))}]]
+                           (api/api-post {:endpoint "signin"
+                                          :keyword  :signin-response
+                                          :params   {:email    @email-address
+                                                     :password @password}}))}]]
      [:span {:class "full-link-wrapper"}
       [:a {:href "/"} "Forgot your password?"]]]))
 
