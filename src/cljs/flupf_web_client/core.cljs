@@ -53,8 +53,8 @@
 
 (defmethod active-page :home []
   (if (session/get :authenticated)
-  [home-page]
-  [login-page]))
+    [home-page]
+    [login-page]))
 
 (defmethod active-page :login [] [login-page])
 
@@ -73,10 +73,10 @@
   (go (let [[name response] (<! response-chanel)]
         (app-routes)
         (if (session/get :authenticated)
-          (secretary/dispatch! "/home")
-          (secretary/dispatch! "/login")))
+          (set-page! :home)
+          (set-page! :login)))
 
-        )
+      )
   (hook-browser-navigation!)
   (mount-root))
 

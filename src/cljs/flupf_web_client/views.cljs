@@ -68,22 +68,25 @@
 
 ;--- Post component ---
 (defn post-component []
-  (let [post (atom nil)]
+  (let [post (reagent/atom nil)]
     [:div {:class "post-component"}
-     [input-element "post-component" "post-component" "text" "Whats on yoour mind...?" post]
-     [:button {:class    "post-btn"
-               :on-click #(api/api-post "posts" {:userid  "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" ;fix in backend so uid is set from session
-                                                 :content @post})} "post"]]
-    ))
+     [:form {:class     "post-component"
+             :on-submit (fn [e] (.preventDefault e))}
+      [input-element "post-component" "post-component" "text" "Whats on yoour mind...?" post]
+      [:button {:type     "sumbit"
+                :class    "post-btn"
+                :on-click #(api/api-post "posts" {:userid  "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" ;fix in backend so uid is set from session
+                                                  :content @post})} "post"]]]))
 
 
 ;--- User feed ---
 
-(defn user-feed [state]
+(defn user-feed []
   (api/api-get {:endpoint "posts/all"
                 :keyword  :user-feed})
   (fn []
     [:div {:class "profile-feed"}
+     [:div (post-component)]
      (map (fn [post]
             ^{:key post} [:div {:class "post"}
                           [:p "ID: " (:id post)]
@@ -114,7 +117,7 @@
         [:li (session/get-in [:profile :phonenumber :String])]]])))
 
 
-(defn contacts-list [state]
+(defn contacts-list []
   (let [contacts "my-contacts"]
     (api/api-get {:endpoint contacts
                   :keyword  :contacts})
