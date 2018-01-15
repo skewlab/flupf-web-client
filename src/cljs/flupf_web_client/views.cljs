@@ -189,6 +189,22 @@
 
 
 ;--- User feed ---
+(defn post
+  "view-component for a post, takes info returns html object"
+  [post-info]
+      [:div {:class "post"}
+       [:div {:class "post-author"}
+        [:img {:src (:avatar post-info)}]
+        [:div
+         [:h2 {:class "post-author-alias"} (:alias post-info)]
+         [:small {:class "post-author-description"} "maybe also fetch description here"]]]
+       [:div {:class "post-content"}
+        [:h3 (:content post-info)]]
+       [:br]
+       "Date: " (:date_created post-info)
+       [:br]
+       [up-button (:ups post-info)]]
+      )
 
 (defn user-feed []
   (api/api-get {:endpoint "posts/all"
@@ -196,17 +212,8 @@
   (fn []
     [:div {:class "user-feed"}
      [:div (post-component)]
-     (map (fn [post]
-            ^{:key post} [:div {:class "post"}
-                          [:div {:class "post-author"}
-                           [:p "ID: " (:id post)]]
-                          [:div {:class "post-content"}
-                           [:h2 (:content post)]]
-                          "author: " (:userid post)
-                          [:br]
-                          "Date: " (:date_created post)
-                          [:br]
-                          [up-button (:ups post)]])
+     (map (fn [feed-post]
+            ^{:key feed-post} [post feed-post])
           (session/get :user-feed))]))
 
 
