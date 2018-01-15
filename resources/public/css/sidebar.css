@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Montserrat");
+@import url("https://fonts.googleapis.com/css?family=Montserrat:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i");
 html {
   width: 100%;
   margin: 0;
@@ -46,18 +46,21 @@ button, .button {
   left: 0;
   top: 0;
   background-color: white;
-  padding: 6% 3% 3% 3%;
+  padding: 3%;
   box-sizing: border-box; }
+  .side-bar .sidebar-search {
+    border: none;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: "Montserrat", sans-serif;
+    padding: 1em; }
 
-.profile-info {
-  width: 100%;
-  float: left; }
-  .profile-info img {
-    box-sizing: border-box;
-    width: 60%;
-    border-radius: 100%; }
-  .profile-info .user-profile-name {
+.menu {
+  list-style-type: none;
+  color: #646478;
+  padding: 0; }
+  .menu li {
+    padding: 2% 0;
     font-weight: 500; }
-  .profile-info .user-description {
-    font-weight: 300;
-    color: #e4e4ec; }
+    .menu li span {
+      margin-left: 10px; }

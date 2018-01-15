@@ -3,24 +3,19 @@
             [reagent.core :as reagent]
             [secretary.core :as secretary :include-macros true]
             [accountant.core :as accountant]
-            [flupf-web-client.session :as session]))
+            [flupf-web-client.construct :refer [settings-menu
+                                                navigation-menu]]
+            [flupf-web-client.session :as session]
+            [flupf-web-client.components :refer [menu]]))
 
 
 
 ;--- HEADER ---
 
-(defn sign-out [username]
-  (api/api-post {:endpoint "signout"
-                 :keyword  :signout-response
-                 :params   {}})
-  (println "signed out"))
 
 
 (defn header []
   [:header
-   [:a {:on-click #(sign-out "Jonas")
-        :class    "link-right link"}
-    "Sign out"]
    [:a {:href       "/my-profile"
         :class-name "link-right link"}
     "My Profile"]
@@ -157,15 +152,18 @@
 (defn sidebar-search
   ""
   []
-  [:input {:placeholder "search"
-           :class       "sidebar-search"}])
+  [:div
+   [:i {:class "fa fa-search"}]
+   [:input {:placeholder "search"
+            :class       "sidebar-search"
+            :style {:fontFamily "FontAwesome"}}]])
 
 (defn profile-info []
   [:div {:class "profile-info"}
    [:img {:src (session/get-in [:profile :avatar :String])
           :alt "no avatar available"}]
    [:h2 (session/get-in [:profile :alias :String])]
-   [:ul
+   [:ul {:class "profile-info"}
     [:li (session/get-in [:profile :description :String])]
     [:li (session/get-in [:profile :website :String])]
     [:li (session/get-in [:profile :phonenumber :String])]]])
@@ -174,12 +172,9 @@
   [:div {:class "side-bar"}
    [sidebar-search]
    [profile-info]
-   [:ul
-    [:li "timeline"]
-    [:li "logout"]]
-   [:ul
-    [:li "settings"]
-    [:li "logout"]]])
+   [menu (navigation-menu)]
+   [menu (settings-menu)]
+   ])
 
 (defn contacts-list []
   (let [contacts "my-contacts"]
