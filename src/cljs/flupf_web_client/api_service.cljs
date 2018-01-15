@@ -31,16 +31,16 @@
               :handler          (fn [response]
                                   (cond (= endpoint "signin")
                                         (do (session/put! :authenticated true)
-                                            (session/put! :current-page :home))
+                                            (secretary/dispatch! "/home"))
                                         (= endpoint "signout")
                                         (do (session/put! :authenticated false)
-                                            (session/put! :current-page :login)))
+                                            (secretary/dispatch! "/login")))
                                   (session/put! keyword response))
               :error-handler    #(error-handler %)
               :with-credentials true
               :format           (ajax/json-request-format)
               :response-format  :json
-              :keywords?        false}))
+              :keywords?        true}))
 
 (defn authenticate [response-chanel]
   (ajax/GET "http://localhost:8000/api/auth"

@@ -4,6 +4,7 @@
             [cljs.core.async :refer [<! chan put!]]
             [flupf-web-client.views :refer [home-page
                                             login-page
+                                            start-page
                                             sign-up-page]]
             [flupf-web-client.construct :refer [create-state]]
             [flupf-web-client.api-service :as api]
@@ -24,25 +25,6 @@
 
 ;--- Uri Routes ---
 
-(defn app-routes []
-  (secretary/set-config! :prefix "#")
-
-  (secretary/defroute "/" []
-                      (println "root"))
-
-  (secretary/defroute "/home" []
-                      (println "i home defroute, core auth is: " (session/get :authenticated))
-                      (set-page! :home))
-
-  (secretary/defroute "/login" []
-                      (println "i login defroute, core auth is: " (session/get :authenticated))
-                      (set-page! :login))
-
-  (secretary/defroute "/signup" []
-                      (println "i signup defroute, core auth is: " (session/get :authenticated))
-                      (set-page! :signup))
-  )
-
 (defn hook-browser-navigation! []
   (doto (History.)
     (events/listen
@@ -50,6 +32,33 @@
       (fn [event]
         (secretary/dispatch! (.-token event))))
     (.setEnabled true)))
+
+(defn set-hash! [loc]
+  (set! (.-hash js/window.location) loc))
+
+(defn app-routes []
+  (secretary/set-config! :prefix "#")
+
+  (secretary/defroute "/" []
+                      (println "root")
+                      (set-page! :start))
+
+  (secretary/defroute "/home" []
+                      (println "i home defroute, core auth is: " (session/get :authenticated))
+                      (set-page! :home)
+                      (set-hash! "/home"))
+
+  (secretary/defroute "/login" []
+                      (println "i login defroute, core auth is: " (session/get :authenticated))
+                      (set-page! :login)
+                      (set-hash! "/login"))
+
+  (secretary/defroute "/signup" []
+                      (println "i signup defroute, core auth is: " (session/get :authenticated))
+                      (set-page! :signup)
+                      (set-hash! "/signup"))
+  )
+
 
 
 ;--- Routing views ---
@@ -59,7 +68,13 @@
 (defmethod active-page :home []
   (if (session/get :authenticated)
     [home-page]
-    [login-page]))
+    [start-page]))
+
+(defmethod active-page :start []
+  (if (session/get :authenticated)
+    [home-page]
+    [start-page]
+    ))
 
 (defmethod active-page :login [] [login-page])
 
@@ -81,9 +96,7 @@
         (app-routes)
         (if (session/get :authenticated)
           (set-page! :home)
-          (set-page! :login)))
-
-      )
+          (set-page! :start))))
   (hook-browser-navigation!)
   (mount-root))
 

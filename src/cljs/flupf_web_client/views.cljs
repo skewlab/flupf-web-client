@@ -9,7 +9,7 @@
 
 ;--- HEADER ---
 
-(defn sign-out [username]
+(defn sign-out []
   (api/api-post {:endpoint "signout"
                  :keyword  :signout-response
                  :params   {}})
@@ -18,7 +18,7 @@
 
 (defn header []
   [:header
-   [:a {:on-click #(sign-out "Jonas")
+   [:a {:on-click #(sign-out)
         :class    "link-right link"}
     "Sign out"]
    [:a {:href       "/my-profile"
@@ -31,18 +31,19 @@
 ;--- LOGIN PAGE ---
 (defn input-element
   "An input element which updates its value on change"
-  [id name type placeholder value]
-  [:input {:id          id
-           :name        name
-           :placeholder placeholder
-           :class       "form-control"
-           :type        type
-           :required    ""
-           :value       @value
-           :on-change   #(reset! value (-> % .-target .-value))}])
+  [{id :id name :name type :type placeholder :placeholder value :value label :label required? :required}]
+  [:div
+   [:strong [:label label (if required? "*")]]
+   [:input {:id          id
+            :name        name
+            :placeholder placeholder
+            :class       "form-control"
+            :type        type
+            :required    required?
+            :value       @value
+            :on-change   #(reset! value (-> % .-target .-value))}]])
 
-
-(defn login-form
+(defn login-page
   "Login form"
   []
   (let [email-address (reagent/atom nil)
@@ -52,10 +53,11 @@
      [:h1 "Sign in"]
      [:form {:class     "login-form"
              :on-submit (fn [e] (.preventDefault e))}
-      [input-element "email" "email" "email" "email" email-address]
-      [input-element "password" "password" "password" "password" password]
+      [input-element {:id "email" :name "email" :type "email" :placeholder "email" :value email-address}]
+      [input-element {:id "password" :name "password" :type "password" :placeholder "password" :value password}]
       [:input {:type     "submit"
                :value    "sign in"
+               :class    "button"
                :on-click (fn []
                            (api/api-post {:endpoint "signin"
                                           :keyword  :signin-response
@@ -65,35 +67,92 @@
       [:a {:href "/"} "Forgot your password?"]]]))
 
 
-(defn login-page
-  "First view of the webpage"
-  [state]
-  [:div (login-form)])
-
 (defn sign-up-page []
   (let [sign-up-info (reagent/atom {:alias           (reagent/atom nil)
                                     :email           (reagent/atom nil)
                                     :password        (reagent/atom nil)
-                                    :repeat-password (reagent/atom nil)})]
+                                    :repeat-password (reagent/atom nil)
+                                    :avatar-url      (reagent/atom nil)
+                                    :description     (reagent/atom nil)
+                                    :website         (reagent/atom nil)
+                                    :phone-number    (reagent/atom nil)})]
     [:div {:class "sign-up"}
      [:h1 "Sign up"]
      [:form {:class     "signup-form"
-             :on-submit (fn [e] (.preventDefault e))}
-      [input-element "alias" "alias" "alias" "alias" (:alias @sign-up-info)]
-      [input-element "email" "email" "email" "email" (:email @sign-up-info)]
-      [input-element "password" "password" "password" "password" (:password @sign-up-info)]
-      [input-element "repeat-password" "repeat-password" "repeat-password" "repeat-password" (:repeat-password @sign-up-info)]
-      [:input {:type     "submit"
-               :value    "sign up"
-               :on-click (fn []
-                           (api/api-post
-                             {:endpoint "users"
-                              :keyword  :signup-response
-                              :params   {:email    @(:email @sign-up-info)
-                                         :alias    @(:alias @sign-up-info)
-                                         :password @(:password @sign-up-info)
-                                         ;:repeat-password @(:repeat-password @sign-up-info)
-                                         }}))}]]
+             :on-submit (fn [e]
+                          (.preventDefault e)
+                          (api/api-post
+                            {:endpoint "users"
+                             :keyword  :signup-response
+                             :params   {:email    @(:email @sign-up-info)
+                                        :alias    @(:alias @sign-up-info)
+                                        :password @(:password @sign-up-info) ;:repeat-password @(:repeat-password @sign-up-info)
+                                        }}))}
+      [input-element {:id          "alias"
+                      :name        "alias"
+                      :type        "text"
+                      :placeholder "alias"
+                      :value       (:alias @sign-up-info)
+                      :label       "Alias"
+                      :required    true}]
+
+      [input-element {:id          "email"
+                      :name        "email"
+                      :type        "email"
+                      :placeholder "email"
+                      :value       (:email @sign-up-info)
+                      :label       "Email"
+                      :required    true}]
+
+      [input-element {:id          "password"
+                      :name        "password"
+                      :type        "password"
+                      :placeholder "password"
+                      :value       (:password @sign-up-info)
+                      :label       "Password"
+                      :required    true}]
+
+      [input-element {:id          "repeat-password"
+                      :name        "repeat-password"
+                      :type        "password"
+                      :placeholder "repeat-password"
+                      :value       (:repeat-password @sign-up-info)
+                      :label       "Repeat Password"
+                      :required    true}]
+
+      [input-element {:id          "avatar"
+                      :name        "avatar"
+                      :type        "url"
+                      :placeholder "Url to image"
+                      :value       (:avatar-url @sign-up-info)
+                      :label       "Url to image"}]
+
+      [input-element {:id          "description"
+                      :name        "description"
+                      :type        "text"
+                      :placeholder "Description"
+                      :value       (:description @sign-up-info)
+                      :label       "Description"}]
+
+      [input-element {:id          "website"
+                      :name        "website"
+                      :type        "url"
+                      :placeholder "Website"
+                      :value       (:website @sign-up-info)
+                      :label       "Website"}]
+
+      [input-element {:id          "phone-number"
+                      :name        "phone-number"
+                      :type        "text"
+                      :placeholder "Phone number"
+                      :value       (:phone-number @sign-up-info)
+                      :label       "Phone number"}]
+
+      [:input {:type  "submit"
+               :value "sign up"
+               :class "button"}]]
+
+     [:div (session/get-in [:signup-response :message])]
      [:span {:class "full-link-wrapper"}]]))
 
 
@@ -179,7 +238,7 @@
     [:li "logout"]]
    [:ul
     [:li "settings"]
-    [:li "logout"]]])
+    [:li {:on-click #(sign-out)} "logout"]]])
 
 (defn contacts-list []
   (let [contacts "my-contacts"]
@@ -212,3 +271,11 @@
      [sidebar]
      [content]]))
 
+
+(defn start-page
+  "First view of the webpage"
+  [state]
+  [:div
+   [:p "allradey have an account?"]
+   [:a {:href "#/login"} "LOGIN HERE"]
+   (sign-up-page)])
