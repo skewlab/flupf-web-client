@@ -337,7 +337,38 @@ header {
     .sign-in input[type="text"]:focus, .sign-in input[type="password"]:focus, .sign-in input[type="email"]:focus {
       outline: none;
       border-color: #ef91b4; }
-  .sign-in .full-link-wrapper {
+
+.sign-up {
+  width: 45%;
+  margin: 10% 27.5%;
+  background-color: white;
+  border-radius: 7px;
+  padding: 3% 7% 3% 4%;
+  box-sizing: border-box;
+  border-left: 40px solid #ef91b4;
+  float: left; }
+  .sign-up h1 {
+    font-weight: 200;
+    text-transform: uppercase; }
+  .sign-up input[type="text"],
+  .sign-up input[type="password"],
+  .sign-up input[type="email"],
+  .sign-up input[type="url"] {
+    width: 100%;
+    font-size: 1em;
+    padding: 1em 0;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    font-weight: 100;
+    margin-bottom: 0.5em; }
+    .sign-up input[type="text"]:focus,
+    .sign-up input[type="password"]:focus,
+    .sign-up input[type="email"]:focus,
+    .sign-up input[type="url"]:focus {
+      outline: none;
+      border-color: #ef91b4; }
+  .sign-up .full-link-wrapper {
     width: 100%;
     text-transform: uppercase;
     font-weight: 200;
@@ -345,10 +376,10 @@ header {
     float: left;
     margin: 5% 0;
     letter-spacing: 0.05em; }
-    .sign-in .full-link-wrapper a {
+    .sign-up .full-link-wrapper a {
       color: inherit;
       text-decoration: none; }
-      .sign-in .full-link-wrapper a:hover {
+      .sign-up .full-link-wrapper a:hover {
         color: #ef91b4; }
 
 main {
