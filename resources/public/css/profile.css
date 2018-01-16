@@ -4,3 +4,7 @@ body {
 
 .header-link {
   color: #000; }
+
+.profile-info {
+  list-style-type: none;
+  padding: 0; }
