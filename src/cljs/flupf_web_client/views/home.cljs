@@ -19,21 +19,25 @@
 (defn sidebar-search
   "Search field"
   []
-  (let [search-string (reagent/atom nil)]
-    [:div
-     [:i {:class "fa fa-search"}]
-     [:form {:on-submit (fn [event] (.preventDefault event))}
-      [:input {:placeholder "search"
-               :class       "sidebar-search"
-               :on-change   (fn [%] (reset! search-string (-> % .-target .-value))
-                              (print @search-string)
-                              (if (> (count @search-string) 1)
-                                (api-post {:params   {:searchstring @search-string}
-                                           :endpoint "search"
-                                           :keyword  :search-response}))
-                              nil)
-               :style       {:fontFamily "FontAwesome"}}]]
-     [:p @search-string]]))
+  (fn []
+    (let [search-string (reagent/atom nil)]
+      [:div
+       [:i {:class "fa fa-search"}]
+       [:form {:on-submit (fn [event] (.preventDefault event))}
+        [:input {:placeholder "search"
+                 :class       "sidebar-search"
+                 :on-change   (fn [%] (reset! search-string (-> % .-target .-value))
+                                (print @search-string)
+                                (if (> (count @search-string) 1)
+                                  (api-post {:params   {:searchstring @search-string}
+                                             :endpoint "search"
+                                             :keyword  :search-response}))
+                                nil)
+                 :style       {:fontFamily "FontAwesome"}}]]
+       [:p @search-string]
+        (map (fn [search-item]
+               ^{:key (:id search-item)} [:p (get-in search-item [:alias :String] )])
+             (session/get :search-response))])))
 
 
 ;;---------     PROFILE-INFO     ---------
