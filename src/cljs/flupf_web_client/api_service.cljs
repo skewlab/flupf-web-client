@@ -29,6 +29,7 @@
   (ajax/POST (str api-url endpoint)
              {:params           params
               :handler          (fn [response]
+                                  (print response)
                                   (cond (= endpoint "signin")
                                         (do (session/put! :authenticated true)
                                             (secretary/dispatch! "/home"))

@@ -15,14 +15,25 @@
 
 ;;---------       SEARCH         ---------
 
+;TODO: Fixa så att den bara söker när man skriver och inte när man suddar! Optimera hela sökgrejen för att göra färre anrop till backend
 (defn sidebar-search
   "Search field"
   []
-  [:div
-   [:i {:class "fa fa-search"}]
-   [:input {:placeholder "search"
-            :class       "sidebar-search"
-            :style       {:fontFamily "FontAwesome"}}]])
+  (let [search-string (reagent/atom nil)]
+    [:div
+     [:i {:class "fa fa-search"}]
+     [:form {:on-submit (fn [event] (.preventDefault event))}
+      [:input {:placeholder "search"
+               :class       "sidebar-search"
+               :on-change   (fn [%] (reset! search-string (-> % .-target .-value))
+                              (print @search-string)
+                              (if (> (count @search-string) 1)
+                                (api-post {:params   {:searchstring @search-string}
+                                           :endpoint "search"
+                                           :keyword  :search-response}))
+                              nil)
+               :style       {:fontFamily "FontAwesome"}}]]
+     [:p @search-string]]))
 
 
 ;;---------     PROFILE-INFO     ---------
@@ -74,7 +85,7 @@
 
 (defn user-feed []
   (api-get {:endpoint "posts/all"
-                :keyword  :user-feed})
+            :keyword  :user-feed})
   (fn []
     [:div {:class "user-feed"}
      [:div (post-component)]
@@ -89,7 +100,7 @@
 (defn contacts-list []
   (let [contacts "my-contacts"]
     (api-get {:endpoint contacts
-                  :keyword  :contacts})
+              :keyword  :contacts})
     (fn []
       [:div {:class "contacts-list"}
        (map (fn [contact]
