@@ -2,10 +2,10 @@
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [reagent.core :as reagent]
             [cljs.core.async :refer [<! chan put!]]
-            [flupf-web-client.views :refer [home-page
-                                            login-page
-                                            start-page
-                                            sign-up-page]]
+            [flupf-web-client.views.home :refer [home-page]]
+            [flupf-web-client.views.signin :refer [signin-page]]
+            [flupf-web-client.views.signup :refer [sign-up-page]]
+            [flupf-web-client.views.start :refer [start-page]]
             [flupf-web-client.construct :refer [create-state]]
             [flupf-web-client.api-service :as api]
             [secretary.core :as secretary :include-macros true]
@@ -76,7 +76,7 @@
     [start-page]
     ))
 
-(defmethod active-page :login [] [login-page])
+(defmethod active-page :login [] [signin-page])
 
 (defmethod active-page :signup [] [sign-up-page])
 
