@@ -25,7 +25,6 @@
 
 
 (defn api-post [{endpoint :endpoint keyword :keyword params :params}]
-  (print params)
   (ajax/POST (str api-url endpoint)
              {:params           params
               :handler          (fn [response]

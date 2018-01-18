@@ -1,5 +1,6 @@
 (ns flupf-web-client.views.home
   (:require [reagent.core :as reagent]
+            [reagent-forms.core :refer [bind-fields]]
             [flupf-web-client.session :as session]
             [flupf-web-client.api-service :refer [api-get
                                                   api-post]]
@@ -15,15 +16,55 @@
 
 ;;---------       SEARCH         ---------
 
+(defn search [text]
+  (if (= (count @text) 0)
+    (do (session/remove! :search-response)
+        (reset! text ""))
+    (api-post {:params   {:searchstring @text}
+               :endpoint "search"
+               :keyword  :search-response})))
+
+;TODO: Fixa så att den bara söker när man skriver och inte när man suddar! Optimera hela sökgrejen för att göra färre anrop till backend
 (defn sidebar-search
   "Search field"
   []
-  [:div
-   [:i {:class "fa fa-search"}]
-   [:input {:placeholder "search"
-            :class       "sidebar-search"
-            :style       {:fontFamily "FontAwesome"}}]])
+  (fn []
+    (let [search-string (reagent/atom nil)]
+      [:div
+       [:i {:class "fa fa-search"}]
+       [:form {:on-submit (fn [event] (.preventDefault event))}
+        [:input {:placeholder "search"
+                 :class       "sidebar-search"
+                 :style       {:fontFamily "FontAwesome"}
+                 :on-change   (fn [event]
+                                (reset! search-string (-> event .-target .-value))
+                                (search search-string))
+                 }]]
+       [:p @search-string] ;Dropdown menu would be nice
+       (map (fn [search-item]
+              ^{:key (:id search-item)} [:p (get-in search-item [:alias :String])])
+            (session/get :search-response))])))
 
+
+#_(def search-input
+    [:div
+     [:input {:field :numeric :id :height}]
+     [:div {:field             :typeahead
+            :id                :ta
+            :input-placeholder "pick a friend"
+            :data-source       search-source
+            :input-class       "form-control"
+            :list-class        "typeahead-list"
+            :item-class        "typeahead-item"
+            :highlight-class   "highlighted"}]])
+
+
+#_(defn form []
+    (let [text (reagent/atom nil)]
+      (fn []
+        [:div
+         [:div [:h1 "Reagent Form"]]
+         [bind-fields search-input text]])))
 
 ;;---------     PROFILE-INFO     ---------
 
@@ -74,7 +115,7 @@
 
 (defn user-feed []
   (api-get {:endpoint "posts/all"
-                :keyword  :user-feed})
+            :keyword  :user-feed})
   (fn []
     [:div {:class "user-feed"}
      [:div (post-component)]
@@ -89,7 +130,7 @@
 (defn contacts-list []
   (let [contacts "my-contacts"]
     (api-get {:endpoint contacts
-                  :keyword  :contacts})
+              :keyword  :contacts})
     (fn []
       [:div {:class "contacts-list"}
        (map (fn [contact]

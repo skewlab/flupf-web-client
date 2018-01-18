@@ -110,6 +110,7 @@
     <orderEntry type="library" name="Leiningen: org.ow2.asm/asm-all:4.2" level="project" />
     <orderEntry type="library" name="Leiningen: pjstadig/humane-test-output:0.8.3" level="project" />
     <orderEntry type="library" name="Leiningen: prone:1.1.4" level="project" />
+    <orderEntry type="library" name="Leiningen: reagent-forms:0.5.35" level="project" />
     <orderEntry type="library" name="Leiningen: reagent-utils:0.2.1" level="project" />
     <orderEntry type="library" name="Leiningen: reagent:0.7.0" level="project" />
     <orderEntry type="library" name="Leiningen: ring-cors:0.1.11" level="project" />
