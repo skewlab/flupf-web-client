@@ -1,4 +1,4 @@
-(ns flupf-web-client.views.home
+(ns flupf-web-client.views.user-view
   (:require [reagent.core :as reagent]
             [reagent-forms.core :refer [bind-fields]]
             [flupf-web-client.session :as session]
@@ -9,6 +9,7 @@
             [flupf-web-client.components :refer [menu
                                                  up-button
                                                  post]]))
+
 
 ;;----------------------------------------
 ;;---------       SIDEBAR        ---------
@@ -135,10 +136,22 @@
 ;;---------       HOME PAGE      ---------
 ;;----------------------------------------
 
-(defn home-page []
-  (api-get {:endpoint "users/me"
-            :keyword  :profile})
-  (fn []
-    [:div
-     [sidebar (session/get :profile)]
-     [content (session/get-in [:profile :id])]]))
+;(defn home-page []
+;  (api-get {:endpoint "users/me"
+;            :keyword  :profile})
+;  (fn []
+;    [:div
+;     [sidebar (session/get :profile)]
+;     [content (session/get-in [:profile :id])]]))
+;;----------------------------------------
+;;---------       User PAGE      ---------
+;;----------------------------------------
+
+(defn user-page [userid]
+  (println userid "i USERPAGE!")
+  (api-get {:endpoint (str "users/" userid)
+            :keyword  (keyword userid)})
+    (fn []
+      [:div
+       [sidebar (session/get (keyword userid))]
+       [content (session/get-in [(keyword userid) :id])]])))

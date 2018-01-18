@@ -3,7 +3,7 @@
   (:require [reagent.core :as reagent :refer [atom]]))
 
 (def state (atom {:authenticated false
-                  :current-page :loading}))
+                  :current-page :start}))
 
 
 (defn get
