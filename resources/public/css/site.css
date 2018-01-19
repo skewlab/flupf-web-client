@@ -102,6 +102,22 @@ button, .button {
     font-family: "Montserrat", sans-serif;
     padding: 1em; }
 
+.user-side-bar {
+  width: 20%;
+  height: 100%;
+  position: fixed;
+  right: 0;
+  top: 0;
+  background-color: white;
+  padding: 3%;
+  box-sizing: border-box; }
+  .user-side-bar .sidebar-search {
+    border: none;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: "Montserrat", sans-serif;
+    padding: 1em; }
+
 .menu {
   list-style-type: none;
   color: #646478;
@@ -173,6 +189,15 @@ button, .button {
   min-height: 100%;
   position: absolute;
   left: 20%;
+  padding: 2%;
+  background-color: #eeeff3;
+  box-sizing: border-box; }
+
+.user-content {
+  width: 80%;
+  min-height: 100%;
+  position: absolute;
+  left: 0;
   padding: 2%;
   background-color: #eeeff3;
   box-sizing: border-box; }

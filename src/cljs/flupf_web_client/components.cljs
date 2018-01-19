@@ -1,4 +1,10 @@
-(ns flupf-web-client.components)
+(ns flupf-web-client.components
+  (:require [reagent.core :as reagent]
+            [flupf-web-client.session :as session]
+            [flupf-web-client.api-service :refer [api-get
+                                                  api-post]]
+            [flupf-web-client.construct :refer [settings-menu
+                                                navigation-menu]]))
 
 ;; Put all components in this file
 
@@ -22,6 +28,62 @@
    (map (fn [menu-item]
           ^{:key (:id menu-item)}
           [menu-link menu-item]) menu-items)])
+
+
+;;----------------------------------------
+;;---------       SIDEBAR        ---------
+;;----------------------------------------
+
+;;---------       SEARCH         ---------
+
+(defn search [text]
+  (if (= (count @text) 0)
+    (do (session/remove! :search-response)
+        (reset! text ""))
+    (api-post {:params   {:searchstring @text}
+               :endpoint "search"
+               :keyword  :search-response})))
+
+(defn sidebar-search
+  "Search field"
+  []
+  (fn []
+    (let [search-string (reagent/atom nil)]
+      [:div
+       [:i {:class "fa fa-search"}]
+       [:form {:on-submit (fn [event] (.preventDefault event))}
+        [:input {:placeholder "search"
+                 :class       "sidebar-search"
+                 :style       {:fontFamily "FontAwesome"}
+                 :on-change   (fn [event]
+                                (reset! search-string (-> event .-target .-value))
+                                (search search-string))
+                 }]]
+       [:p @search-string]                                  ;Dropdown menu would be nice
+       (map (fn [search-item]
+              ^{:key (:id search-item)} [:p (get-in search-item [:alias :String])])
+            (session/get :search-response))])))
+
+;;---------     PROFILE-INFO     ---------
+
+(defn profile-info [profile]
+  [:div {:class "profile-info"}
+   [:img {:src (get-in profile [:avatar :String])
+          :alt "no avatar available"}]
+   [:h2 (get-in profile [:alias :String])]
+   [:ul {:class "profile-info"}
+    [:li (get-in profile [:description :String])]
+    [:li (get-in profile [:website :String])]
+    [:li (get-in profile [:phonenumber :String])]]])
+
+
+(defn sidebar [{profile :profile class :class type :type}]
+  [:div {:class class}
+   (if (not= type :user) [sidebar-search] nil)
+   [profile-info profile]
+   [menu (navigation-menu)]
+   [menu (settings-menu)]])
+
 
 
 ;;----------------------------------------
@@ -57,6 +119,14 @@
    [:br]
    [up-button (:ups post-info)]]
   )
+
+;;---------     USER-FEED    ---------
+
+(defn user-feed [feed]
+  [:div {:class "user-feed"}
+    (map (fn [feed-post]
+           ^{:key feed-post} [post feed-post])
+         feed)])
 
 
 ;;----------------------------------------

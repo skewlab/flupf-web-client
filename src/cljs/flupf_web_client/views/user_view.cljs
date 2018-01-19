@@ -4,67 +4,11 @@
             [flupf-web-client.session :as session]
             [flupf-web-client.api-service :refer [api-get
                                                   api-post]]
-            [flupf-web-client.construct :refer [settings-menu
-                                                navigation-menu]]
             [flupf-web-client.components :refer [menu
                                                  up-button
-                                                 post]]))
-
-
-;;----------------------------------------
-;;---------       SIDEBAR        ---------
-;;----------------------------------------
-
-;;---------       SEARCH         ---------
-
-(defn search [text]
-  (if (= (count @text) 0)
-    (do (session/remove! :search-response)
-        (reset! text ""))
-    (api-post {:params   {:searchstring @text}
-               :endpoint "search"
-               :keyword  :search-response})))
-
-(defn sidebar-search
-  "Search field"
-  []
-  (fn []
-    (let [search-string (reagent/atom nil)]
-      [:div
-       [:i {:class "fa fa-search"}]
-       [:form {:on-submit (fn [event] (.preventDefault event))}
-        [:input {:placeholder "search"
-                 :class       "sidebar-search"
-                 :style       {:fontFamily "FontAwesome"}
-                 :on-change   (fn [event]
-                                (reset! search-string (-> event .-target .-value))
-                                (search search-string))
-                 }]]
-       [:p @search-string]                                  ;Dropdown menu would be nice
-       (map (fn [search-item]
-              ^{:key (:id search-item)} [:p (get-in search-item [:alias :String])])
-            (session/get :search-response))])))
-
-
-;;---------     PROFILE-INFO     ---------
-
-(defn profile-info [profile]
-  [:div {:class "profile-info"}
-   [:img {:src (get-in profile [:avatar :String])
-          :alt "no avatar available"}]
-   [:h2 (get-in profile [:alias :String])]
-   [:ul {:class "profile-info"}
-    [:li (get-in profile [:description :String])]
-    [:li (get-in profile [:website :String])]
-    [:li (get-in profile [:phonenumber :String])]]])
-
-
-(defn sidebar [profile]
-  [:div {:class "side-bar"}
-   [sidebar-search]
-   [profile-info profile]
-   [menu (navigation-menu)]
-   [menu (settings-menu)]])
+                                                 post
+                                                 sidebar
+                                                 user-feed]]))
 
 
 ;;----------------------------------------
@@ -91,14 +35,6 @@
                               :params   {:userid  (session/get-in [:profile :id])
                                          :content @post}})} "Post"]]]))
 
-;;---------     USER-FEED    ---------
-
-(defn user-feed []
-  [:div {:class "user-feed"}
-   [:div (post-component)
-    (map (fn [feed-post]
-           ^{:key feed-post} [post feed-post])
-         (session/get :user-feed))]])
 
 
 ;;---------    CONTACT-LIST     ---------
@@ -119,15 +55,15 @@
 
 (defn content
   "Content view excludes siedbar"
-  [userid]
-  (api-get {:endpoint (str "feed/" userid)
-            :keyword  :user-feed})
+  []
   [:div {:class "content"}
    ;; Should contain the feed
    [:div {:class "left-content-column"}
-    [user-feed]]
+    [user-feed (session/get :user-feed)]]
    [:div {:class "right-content-column"}
-    [contacts-list]]
+    [sidebar {:class   "user-sidebar"
+              :profile (session/get :user-profile)
+              :type :user}]]
    ;; Should contain the right field
    ])
 
@@ -147,11 +83,11 @@
 ;;---------       User PAGE      ---------
 ;;----------------------------------------
 
-(defn user-page [userid]
-  (println userid "i USERPAGE!")
-  (api-get {:endpoint (str "users/" userid)
-            :keyword  (keyword userid)})
-    (fn []
-      [:div
-       [sidebar (session/get (keyword userid))]
-       [content (session/get-in [(keyword userid) :id])]])))
+(defn user-page [id]
+  (println "i USERPAGE!")
+  (fn []
+    [:div
+     [sidebar {:profile (session/get :profile)
+               :class   "side-bar"
+               :type :profile}]
+     [content]]))
