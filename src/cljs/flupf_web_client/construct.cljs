@@ -14,6 +14,11 @@
                  :params   {}})
   (println "signed out"))
 
+
+(defn contact-name [user-id link-tag]
+  [:a {:href (str "/#/user/" user-id)}
+   link-tag])
+
 ;;----------------------------------------
 ;;---------         MENU         ---------
 ;;----------------------------------------
