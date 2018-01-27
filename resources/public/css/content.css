@@ -61,6 +61,10 @@ button, .button {
   width: 60%;
   float: left; }
 
+.left-content-column-contact-view {
+  width: 74%;
+  float: left; }
+
 .right-content-column {
   width: 37%;
   margin-left: 2%;

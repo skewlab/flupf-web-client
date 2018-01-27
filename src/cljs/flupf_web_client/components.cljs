@@ -4,7 +4,8 @@
             [flupf-web-client.api-service :refer [api-get
                                                   api-post]]
             [flupf-web-client.construct :refer [settings-menu
-                                                navigation-menu]]))
+                                                navigation-menu
+                                                contact-menu]]))
 
 ;; Put all components in this file
 
@@ -77,12 +78,17 @@
     [:li (get-in profile [:phonenumber :String])]]])
 
 
-(defn sidebar [{profile :profile class :class type :type}]
+(defn sidebar [{profile :profile class :class}]
   [:div {:class class}
    (if (not= type :user) [sidebar-search] nil)
    [profile-info profile]
    [menu (navigation-menu)]
    [menu (settings-menu)]])
+
+(defn contact-sidebar [{profile :profile class :class}]
+  [:div {:class "user-side-bar"}
+   [profile-info profile]
+   [menu (contact-menu)]])
 
 
 

@@ -8,6 +8,7 @@
                                                  up-button
                                                  post
                                                  sidebar
+                                                 contact-sidebar
                                                  user-feed]]))
 
 
@@ -58,12 +59,12 @@
   []
   [:div {:class "content"}
    ;; Should contain the feed
-   [:div {:class "left-content-column"}
+   [:div {:class "left-content-column-contact-view"}
     [user-feed (session/get :user-feed)]]
    [:div {:class "right-content-column"}
-    [sidebar {:class   "user-sidebar"
+    [contact-sidebar {:class   "user-side-bar"
               :profile (session/get :user-profile)
-              :type :user}]]
+              :type    :user}]]
    ;; Should contain the right field
    ])
 
@@ -89,5 +90,5 @@
     [:div
      [sidebar {:profile (session/get :profile)
                :class   "side-bar"
-               :type :profile}]
+               :type    :profile}]
      [content]]))
