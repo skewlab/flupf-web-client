@@ -5,45 +5,16 @@
             [flupf-web-client.api-service :refer [api-get
                                                   api-post]]
             [flupf-web-client.construct :refer [settings-menu
-                                                navigation-menu]]
+                                                navigation-menu
+                                                contact-name]]
             [flupf-web-client.components :refer [menu
                                                  up-button
-                                                 post]]))
+                                                 post
+                                                 sidebar-search]]))
 
 ;;----------------------------------------
 ;;---------       SIDEBAR        ---------
 ;;----------------------------------------
-
-;;---------       SEARCH         ---------
-
-(defn search [text]
-  (if (= (count @text) 0)
-    (do (session/remove! :search-response)
-        (reset! text ""))
-    (api-post {:params   {:searchstring @text}
-               :endpoint "search"
-               :keyword  :search-response})))
-
-(defn sidebar-search
-  "Search field"
-  []
-  (fn []
-    (let [search-string (reagent/atom nil)]
-      [:div
-       [:i {:class "fa fa-search"}]
-       [:form {:on-submit (fn [event] (.preventDefault event))}
-        [:input {:placeholder "search"
-                 :class       "sidebar-search"
-                 :style       {:fontFamily "FontAwesome"}
-                 :on-change   (fn [event]
-                                (reset! search-string (-> event .-target .-value))
-                                (search search-string))
-                 }]]
-       [:p @search-string]                                  ;Dropdown menu would be nice
-       (map (fn [search-item]
-              ^{:key (:id search-item)} [:p (get-in search-item [:alias :String])])
-            (session/get :search-response))])))
-
 
 ;;---------     PROFILE-INFO     ---------
 

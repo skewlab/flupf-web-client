@@ -68,18 +68,6 @@
    ;; Should contain the right field
    ])
 
-
-;;----------------------------------------
-;;---------       HOME PAGE      ---------
-;;----------------------------------------
-
-;(defn home-page []
-;  (api-get {:endpoint "users/me"
-;            :keyword  :profile})
-;  (fn []
-;    [:div
-;     [sidebar (session/get :profile)]
-;     [content (session/get-in [:profile :id])]]))
 ;;----------------------------------------
 ;;---------       User PAGE      ---------
 ;;----------------------------------------

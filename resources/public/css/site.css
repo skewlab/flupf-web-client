@@ -101,6 +101,9 @@ button, .button {
     font-weight: 500;
     font-family: "Montserrat", sans-serif;
     padding: 1em; }
+  .side-bar .search-item:hover {
+    cursor: pointer;
+    background-color: #eee; }
 
 .user-side-bar {
   width: 20%;

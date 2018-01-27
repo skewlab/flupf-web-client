@@ -5,7 +5,8 @@
                                                   api-post]]
             [flupf-web-client.construct :refer [settings-menu
                                                 navigation-menu
-                                                contact-menu]]))
+                                                contact-menu
+                                                contact-name]]))
 
 ;; Put all components in this file
 
@@ -58,18 +59,14 @@
                  :style       {:fontFamily "FontAwesome"}
                  :on-change   (fn [event]
                                 (reset! search-string (-> event .-target .-value))
-                                (search search-string))
-                 }]]
-       [:p @search-string]                                  ;Dropdown menu would be nice
+                                (search search-string))}]]
        (map (fn [search-item]
-              ^{:key (:id search-item)} [:p (get-in search-item [:alias :String])])
+              ^{:key (:id search-item)}
+              [contact-name (:id search-item)
+               [:p (get-in search-item [:alias :String])]])
             (session/get :search-response))])))
 
 ;;---------     PROFILE-INFO     ---------
-
-(defn contact-name [user-id link-tag]
-  [:a {:href (str "/#/user/" user-id)}
-   link-tag])
 
 (defn profile-info [profile]
   [:div {:class "profile-info"}
