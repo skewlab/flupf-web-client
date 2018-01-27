@@ -24,7 +24,6 @@
                :endpoint "search"
                :keyword  :search-response})))
 
-;TODO: Fixa så att den bara söker när man skriver och inte när man suddar! Optimera hela sökgrejen för att göra färre anrop till backend
 (defn sidebar-search
   "Search field"
   []
@@ -40,49 +39,29 @@
                                 (reset! search-string (-> event .-target .-value))
                                 (search search-string))
                  }]]
-       [:p @search-string] ;Dropdown menu would be nice
+       [:p @search-string]                                  ;Dropdown menu would be nice
        (map (fn [search-item]
               ^{:key (:id search-item)} [:p (get-in search-item [:alias :String])])
             (session/get :search-response))])))
 
 
-#_(def search-input
-    [:div
-     [:input {:field :numeric :id :height}]
-     [:div {:field             :typeahead
-            :id                :ta
-            :input-placeholder "pick a friend"
-            :data-source       search-source
-            :input-class       "form-control"
-            :list-class        "typeahead-list"
-            :item-class        "typeahead-item"
-            :highlight-class   "highlighted"}]])
-
-
-#_(defn form []
-    (let [text (reagent/atom nil)]
-      (fn []
-        [:div
-         [:div [:h1 "Reagent Form"]]
-         [bind-fields search-input text]])))
-
 ;;---------     PROFILE-INFO     ---------
 
-(defn profile-info []
+(defn profile-info [profile]
   [:div {:class "profile-info"}
-   [:img {:src (session/get-in [:profile :avatar :String])
+   [:img {:src (get-in profile [:avatar :String])
           :alt "no avatar available"}]
-   [:h2 (session/get-in [:profile :alias :String])]
+   [:h2 (get-in profile [:alias :String])]
    [:ul {:class "profile-info"}
-    [:li (session/get-in [:profile :description :String])]
-    [:li (session/get-in [:profile :website :String])]
-    [:li (session/get-in [:profile :phonenumber :String])]]])
+    [:li (get-in profile [:description :String])]
+    [:li (get-in profile [:website :String])]
+    [:li (get-in profile [:phonenumber :String])]]])
 
 
-(defn sidebar []
+(defn sidebar [profile]
   [:div {:class "side-bar"}
    [sidebar-search]
-   [profile-info]
+   [profile-info profile]
    [menu (navigation-menu)]
    [menu (settings-menu)]])
 
@@ -114,14 +93,11 @@
 ;;---------     USER-FEED    ---------
 
 (defn user-feed []
-  (api-get {:endpoint "posts/all"
-            :keyword  :user-feed})
-  (fn []
-    [:div {:class "user-feed"}
-     [:div (post-component)]
-     (map (fn [feed-post]
-            ^{:key feed-post} [post feed-post])
-          (session/get :user-feed))]))
+  [:div {:class "user-feed"}
+   [:div (post-component)
+    (map (fn [feed-post]
+           ^{:key feed-post} [post feed-post])
+         (session/get :user-feed))]])
 
 
 ;;---------    CONTACT-LIST     ---------
@@ -135,13 +111,16 @@
       [:div {:class "contacts-list"}
        (map (fn [contact]
               ^{:key contact} [:div {:class "contact"}
-                               [:h2 (get-in contact [:alias :String])]]
+                               [:a {:href (str "/#/user/" (:id contact))}
+                                [:h2 (get-in contact [:alias :String])]]]
               ) (session/get :contacts))])))
 
 
 (defn content
   "Content view excludes siedbar"
-  []
+  [userid]
+  (api-get {:endpoint (str "feed/" userid)
+            :keyword  :user-feed})
   [:div {:class "content"}
    ;; Should contain the feed
    [:div {:class "left-content-column"}
@@ -157,7 +136,9 @@
 ;;----------------------------------------
 
 (defn home-page []
+  (api-get {:endpoint "users/me"
+            :keyword  :profile})
   (fn []
     [:div
-     [sidebar]
-     [content]]))
+     [sidebar (session/get :profile)]
+     [content (session/get-in [:profile :id])]]))

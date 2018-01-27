@@ -6,6 +6,7 @@
             [flupf-web-client.views.signin :refer [signin-page]]
             [flupf-web-client.views.signup :refer [sign-up-page]]
             [flupf-web-client.views.start :refer [start-page]]
+            [flupf-web-client.views.user-view :refer [user-page]]
             [flupf-web-client.construct :refer [create-state]]
             [flupf-web-client.api-service :as api]
             [secretary.core :as secretary :include-macros true]
@@ -15,6 +16,10 @@
             [flupf-web-client.session :as session])
   (:import goog.History))
 
+
+(defn render [page]
+  "render root component"
+  (reagent/render [page] (.getElementById js/document "app")))
 
 ;; --- Initialize app ---
 (def app-state (create-state))
@@ -41,62 +46,45 @@
 
   (secretary/defroute "/" []
                       (println "root")
-                      (set-page! :start))
+                      (if (session/get :authenticated)
+                        (set-hash! "/home")
+                        (render start-page)))
 
   (secretary/defroute "/home" []
                       (println "i home defroute, core auth is: " (session/get :authenticated))
-                      (set-page! :home)
-                      (set-hash! "/home"))
+                      (if (session/get :authenticated)
+                        (do (render home-page) (set-hash! "/home"))
+                        (do (render signin-page) (set-hash! "/signin"))))
 
-  (secretary/defroute "/login" []
+
+  (secretary/defroute "/user/:id" [id]
+                      (api/api-get {:endpoint (str "feed/" id)
+                                    :keyword  :user-feed})
+                      (api/api-get {:endpoint (str "users/" id)
+                                    :keyword  :user-profile})
+                      (println "i user defroute, core auth is: " (session/get :authenticated))
+                      (render user-page)
+                      (set-hash! (str "/user/" id)))
+
+  (secretary/defroute "/signin" []
                       (println "i login defroute, core auth is: " (session/get :authenticated))
-                      (set-page! :login)
-                      (set-hash! "/login"))
+                      (set-hash! "/signin")
+                      (render signin-page))
 
   (secretary/defroute "/signup" []
                       (println "i signup defroute, core auth is: " (session/get :authenticated))
-                      (set-page! :signup)
-                      (set-hash! "/signup"))
+                      (set-hash! "/signup")
+                      (render sign-up-page))
   )
 
 
-
-;--- Routing views ---
-
-(defmulti active-page #(session/get :current-page))
-
-(defmethod active-page :home []
-  (if (session/get :authenticated)
-    [home-page]
-    [start-page]))
-
-(defmethod active-page :start []
-  (if (session/get :authenticated)
-    [home-page]
-    [start-page]
-    ))
-
-(defmethod active-page :login [] [signin-page])
-
-(defmethod active-page :signup [] [sign-up-page])
-
-(defmethod active-page :loading [] [:div "loading"])
-
-
-; --- Initial rendering ---
-
-(defn mount-root []
-  "render root component"
-  (reagent/render [active-page] (.getElementById js/document "app")))
+; --- Initial rendering --
 
 
 (defn init! []
   (api/authenticate response-chanel)
   (go (let [[name response] (<! response-chanel)]
-        (app-routes)
-        (if (session/get :authenticated)
-          (set-page! :home)
-          (set-page! :start))))
+        (secretary/dispatch! (.-hash js/window.location))))
   (hook-browser-navigation!)
-  (mount-root))
+  (app-routes))
 

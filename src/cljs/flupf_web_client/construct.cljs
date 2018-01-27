@@ -50,3 +50,17 @@
     :id     "s5"
     :action (fn []
               (println "Gallery"))}])
+
+(defn contact-menu
+  ""
+  []
+  [{:name   "Timeline"
+    :icon   "fa fa-clock-o"
+    :id     "s3"
+    :action (fn []
+              (println "Timeline"))}
+   {:name   "Gallery"
+    :icon   "fa fa-picture-o"
+    :id     "s5"
+    :action (fn []
+              (println "Gallery"))}])
