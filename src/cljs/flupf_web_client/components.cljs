@@ -67,11 +67,15 @@
 
 ;;---------     PROFILE-INFO     ---------
 
+(defn contact-name [user-id link-tag]
+  [:a {:href (str "/#/user/" user-id)}
+   link-tag])
+
 (defn profile-info [profile]
   [:div {:class "profile-info"}
    [:img {:src (get-in profile [:avatar :String])
           :alt "no avatar available"}]
-   [:h2 (get-in profile [:alias :String])]
+   [contact-name (:id profile) [:h2 (get-in profile [:alias :String])]]
    [:ul {:class "profile-info"}
     [:li (get-in profile [:description :String])]
     [:li (get-in profile [:website :String])]
@@ -116,12 +120,13 @@
    [:div {:class "post-author"}
     [:img {:src (:avatar post-info)}]
     [:div
-     [:h2 {:class "post-author-alias"} (:alias post-info)]
+     [contact-name (:userid post-info)
+      [:h2 {:class "post-author-alias"} (:alias post-info)]]
      [:small {:class "post-author-description"} "maybe also fetch description here"]]]
    [:div {:class "post-content"}
-    [:h3 (:content post-info)]]
+    [:p (:content post-info)]]
    [:br]
-   "Date: " (:date_created post-info)
+   [:small (:date_created post-info)]
    [:br]
    [up-button (:ups post-info)]]
   )
@@ -130,9 +135,9 @@
 
 (defn user-feed [feed]
   [:div {:class "user-feed"}
-    (map (fn [feed-post]
-           ^{:key feed-post} [post feed-post])
-         feed)])
+   (map (fn [feed-post]
+          ^{:key feed-post} [post feed-post])
+        feed)])
 
 
 ;;----------------------------------------
