@@ -1,3 +1,45 @@
+@import 'globals'
+//@import url('https://fonts.googleapis.com/css?family=Montserrat')
+@import url('https://fonts.googleapis.com/css?family=Montserrat:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i')
+
+html
+  //height: 100%
+  width: 100%
+  margin: 0
+  padding: 0
 body
-  background: tomato
-  color: pink
+  //height: 100%
+  width: 100%
+  margin: 0
+  padding: 0
+  background-color: $color-background
+  font-family: Montserrat, sans-serif
+
+form
+  box-sizing: border-box
+  input
+    box-sizing: border-box
+
+button, .button
+  border: none
+  background-color: $color-theme
+  color: white
+  font-size: 1em
+  padding: 2% 6%
+  box-sizing: border-box
+  border-radius: $box-border-radius
+  float: right
+  font-weight: 200
+  text-decoration: none
+  &:hover
+    color: white
+    transition: 0.15s ease-in-out
+    cursor: pointer
+
+// GENERAL STYLING //
+.content-box
+    border-radius: $box-border-radius
+    background-color: white
+    box-sizing: border-box
+    float: left
+    width: 100%
