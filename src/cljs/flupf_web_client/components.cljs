@@ -16,7 +16,7 @@
 ;;----------------------------------------
 
 (defn menu-link
-  "Menu link"
+  "Menu link" 
   [menu-item]
   [:li {:on-click (:action menu-item)}
    [:i {:aria-hidden "true"
