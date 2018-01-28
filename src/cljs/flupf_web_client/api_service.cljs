@@ -33,7 +33,7 @@
                                             (secretary/dispatch! "/home"))
                                         (= endpoint "signout")
                                         (do (session/put! :authenticated false)
-                                            (secretary/dispatch! "/login")))
+                                            (secretary/dispatch! "/signin")))
                                   (session/put! keyword response))
               :error-handler    #(error-handler %)
               :with-credentials true
