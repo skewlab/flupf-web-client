@@ -7,6 +7,7 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/core.async "0.3.465"]
                  [cljs-http "0.1.44"]
+                 [nilenso/wscljs "0.1.1"]
                  [cljs-ajax "0.7.3"]
                  [devcards "0.2.4"]
                  [ring-server "0.5.0"]

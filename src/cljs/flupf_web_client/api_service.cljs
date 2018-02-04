@@ -4,7 +4,21 @@
             [ajax.core :as ajax]
             [cljs.core.async :refer [<! put!]]
             [flupf-web-client.session :as session]
-            [secretary.core :as secretary]))
+            [secretary.core :as secretary]
+            [wscljs.client :as ws]
+            [wscljs.format :as fmt]))
+
+(defn new-post [data]
+  (session/put! :user-feed (cons data (session/get :user-feed))))
+
+(def handlers {:on-message (fn [e]
+                             ;; There exist info about which table, so if we need notifications form other
+                             ;; tables this is possible!
+                             (new-post (js->clj (.parse js/JSON (.-data e)) :keywordize-keys true )))
+               :on-open #(prn "Opening a new connection")
+               :on-close #(prn "Closing a connection")})
+
+(def socket (ws/create "ws://localhost:8000/websocket" handlers))
 
 
 
