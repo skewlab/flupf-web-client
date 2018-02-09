@@ -16,7 +16,7 @@
 ;;----------------------------------------
 
 (defn menu-link
-  "Menu link" 
+  "Menu link"
   [menu-item]
   [:li {:on-click (:action menu-item)}
    [:i {:aria-hidden "true"
@@ -31,6 +31,40 @@
           ^{:key (:id menu-item)}
           [menu-link menu-item]) menu-items)])
 
+;;----------------------------------------
+;;-----------     CONNECT     ------------
+;;----------------------------------------
+
+(defn connect
+  "Send a connection request"
+  [user-id]
+  (println (session/get :profile))
+  (api-post {:endpoint "user-connections" :keyword :connection-reponse :params {:loggedInUser (:id (session/get :profile))
+                                                                                :newConnection user-id}}))
+
+(defn connect-button
+  "Connect with a user through this button"
+  [new-friend-id]
+  [:div
+   [:button {:class    "connect-button"
+             :onClick (fn [event]
+                         (connect new-friend-id))} "Connect!"]])
+
+(defn connection-request
+  ""
+  [request]
+  [:div {:class "contacts-list"}
+   (str (:requestingUser request) "wishes to connect to you")
+   [:button {:onClick (fn[]
+                        (println "Accept"))} "Accept"]
+   [:button {:onClick (fn[]
+                        (println "Decline"))} "Decline"]])
+
+(defn display-connection-requests
+  ""
+  [connection-requests]
+  [:div (map (fn [request]
+               ^{:key request} [connection-request request]) connection-requests)])
 
 ;;----------------------------------------
 ;;---------       SIDEBAR        ---------
@@ -89,6 +123,8 @@
 (defn contact-sidebar [{profile :profile class :class}]
   [:div {:class "user-side-bar"}
    [profile-info profile]
+   ; Connect! button
+   [connect-button (:id profile)]
    [menu (contact-menu)]])
 
 
@@ -154,3 +190,5 @@
             :required    required?
             :value       @value
             :on-change   #(reset! value (-> % .-target .-value))}]])
+
+

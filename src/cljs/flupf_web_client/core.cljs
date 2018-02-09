@@ -47,8 +47,8 @@
   (secretary/defroute "/" []
                       (println "root")
                       (if (session/get :authenticated)
-                        (set-hash! "/home")
-                        (render start-page)))
+                        (do (render home-page) (set-hash! "/home"))
+                        (do (render signin-page) (set-hash! "/signin"))))
 
   (secretary/defroute "/home" []
                       (println "i home defroute, core auth is: " (session/get :authenticated))

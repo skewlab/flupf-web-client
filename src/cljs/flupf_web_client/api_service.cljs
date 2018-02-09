@@ -24,7 +24,9 @@
              :keywords?        true}))
 
 
-(defn api-post [{endpoint :endpoint keyword :keyword params :params}]
+(defn api-post
+  "Post to the API"
+  [{endpoint :endpoint keyword :keyword params :params}]
   (ajax/POST (str api-url endpoint)
              {:params           params
               :handler          (fn [response]

@@ -88,7 +88,7 @@
 
 
 (defn content
-  "Content view excludes siedbar"
+  "Content view excludes sidebar"
   [userid]
   (api-get {:endpoint (str "feed/" userid)
             :keyword  :user-feed})

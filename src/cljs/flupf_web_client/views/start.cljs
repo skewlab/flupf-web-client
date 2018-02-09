@@ -6,5 +6,5 @@
   [state]
   [:div
    [:p "allradey have an account?"]
-   [:a {:href "#/login"} "LOGIN HERE"]
+   [:a {:href "#/signin"} "LOGIN HERE"]
    (sign-up-page)])
