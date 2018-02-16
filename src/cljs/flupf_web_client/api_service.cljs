@@ -4,11 +4,25 @@
             [ajax.core :as ajax]
             [cljs.core.async :refer [<! put!]]
             [flupf-web-client.session :as session]
-            [secretary.core :as secretary]))
+            [secretary.core :as secretary]
+            [wscljs.client :as ws]
+            [wscljs.format :as fmt]))
+
+(defn new-post [data]
+  (session/put! :user-feed (cons data (session/get :user-feed))))
+
+(def handlers {:on-message (fn [e]
+                             ;; There exist info about which table, so if we need notifications form other
+                             ;; tables this is possible!
+                             (new-post (js->clj (.parse js/JSON (.-data e)) :keywordize-keys true )))
+               :on-open #(prn "Opening a new connection")
+               :on-close #(prn "Closing a connection")})
+
+(def socket (ws/create "ws://192.168.1.4:8000/websocket" handlers))
 
 
 
-(def api-url "http://localhost:8000/api/")
+(def api-url "http://192.168.1.4:8000/api/")
 
 (defn error-handler [error]
   (println error))
@@ -16,7 +30,9 @@
 (defn api-get [{endpoint :endpoint
                 keyword  :keyword}]
   (ajax/GET (str api-url endpoint)
-            {:handler          (fn [response]
+            {:headers {"Access-Control-Allow-Headers" "Content-Type"
+                        "Access-Control-Allow-Origin" "*"}
+             :handler          (fn [response]
                                  (session/put! keyword response))
              :error-handler    #(error-handler %)
              :with-credentials true
@@ -26,7 +42,9 @@
 
 (defn api-post [{endpoint :endpoint keyword :keyword params :params}]
   (ajax/POST (str api-url endpoint)
-             {:params           params
+             {:headers {"Access-Control-Allow-Headers" "Content-Type"
+                        "Access-Control-Allow-Origin" "*"}
+              :params           params
               :handler          (fn [response]
                                   (cond (= endpoint "signin")
                                         (do (session/put! :authenticated true)
@@ -42,8 +60,10 @@
               :keywords?        true}))
 
 (defn authenticate [response-chanel]
-  (ajax/GET "http://localhost:8000/api/auth"
-            {:handler          (fn [res]
+  (ajax/GET "http://192.168.1.4:8000/api/auth"
+            {:headers {"Access-Control-Allow-Headers" "Content-Type"
+                       "Access-Control-Allow-Origin" "*"}
+             :handler          (fn [res]
                                  #_(println res)
                                  (session/put! :authenticated true)
                                  (api-get {:endpoint "users/me"

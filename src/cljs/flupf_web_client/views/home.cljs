@@ -3,14 +3,17 @@
             [reagent-forms.core :refer [bind-fields]]
             [flupf-web-client.session :as session]
             [flupf-web-client.api-service :refer [api-get
-                                                  api-post]]
+                                                  api-post
+                                                  socket]]
             [flupf-web-client.construct :refer [settings-menu
                                                 navigation-menu
                                                 contact-name]]
             [flupf-web-client.components :refer [menu
                                                  up-button
                                                  post
-                                                 sidebar-search]]))
+                                                 sidebar-search]]
+            [wscljs.client :as ws]
+            [wscljs.format :as fmt]))
 
 ;;----------------------------------------
 ;;---------       SIDEBAR        ---------
@@ -52,7 +55,8 @@
                   :name        "post"
                   :placeholder "What are you thinking about?"
                   :type        "text"
-                  :on-change   #(reset! post (-> % .-target .-value))}]
+                  :on-change   (fn [%] (reset! post (-> % .-target .-value))
+                                 (ws/send socket {:command "ping"} fmt/json))}]
       [:button {:type     "sumbit"
                 :class    "post-btn"
                 :on-click #(api-post
