@@ -18,11 +18,11 @@
                :on-open #(prn "Opening a new connection")
                :on-close #(prn "Closing a connection")})
 
-(def socket (ws/create "ws://192.168.1.4:8000/websocket" handlers))
+(def socket (ws/create "ws://localhost:8000/websocket" handlers))
 
 
 
-(def api-url "http://192.168.1.4:8000/api/")
+(def api-url "http://localhost:8000/api/")
 
 (defn error-handler [error]
   (println error))
@@ -60,7 +60,7 @@
               :keywords?        true}))
 
 (defn authenticate [response-chanel]
-  (ajax/GET "http://192.168.1.4:8000/api/auth"
+  (ajax/GET "http://localhost:8000/api/auth"
             {:headers {"Access-Control-Allow-Headers" "Content-Type"
                        "Access-Control-Allow-Origin" "*"}
              :handler          (fn [res]
