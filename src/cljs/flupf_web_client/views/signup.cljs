@@ -17,7 +17,7 @@
                                     :description     (reagent/atom nil)
                                     :website         (reagent/atom nil)
                                     :phone-number    (reagent/atom nil)})]
-    [:div {:class "sign-up"}
+    [:div {:class "sign-form sign-up"}
      [:h1 "Sign up"]
      [:form {:class     "signup-form"
              :on-submit (fn [e]
@@ -61,28 +61,28 @@
                       :label       "Repeat Password"
                       :required    true}]
 
-      [input-element {:id          "avatar"
+      #_[input-element {:id          "avatar"
                       :name        "avatar"
                       :type        "url"
                       :placeholder "Url to image"
                       :value       (:avatar-url @sign-up-info)
                       :label       "Url to image"}]
 
-      [input-element {:id          "description"
+      #_[input-element {:id          "description"
                       :name        "description"
                       :type        "text"
                       :placeholder "Description"
                       :value       (:description @sign-up-info)
                       :label       "Description"}]
 
-      [input-element {:id          "website"
+      #_[input-element {:id          "website"
                       :name        "website"
                       :type        "url"
                       :placeholder "Website"
                       :value       (:website @sign-up-info)
                       :label       "Website"}]
 
-      [input-element {:id          "phone-number"
+      #_[input-element {:id          "phone-number"
                       :name        "phone-number"
                       :type        "text"
                       :placeholder "Phone number"

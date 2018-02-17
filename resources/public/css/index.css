@@ -2,14 +2,17 @@
 html {
   width: 100%;
   margin: 0;
-  padding: 0; }
+  padding: 0;
+  box-sizing: border-box; }
 
 body {
   width: 100%;
   margin: 0;
   padding: 0;
-  background-color: #eeeff3;
-  font-family: Montserrat, sans-serif; }
+  background-image: Url("../background-img-pink.png");
+  background-size: cover;
+  font-family: Montserrat, sans-serif;
+  box-sizing: border-box; }
 
 form {
   box-sizing: border-box; }
@@ -17,15 +20,16 @@ form {
     box-sizing: border-box; }
 
 button, .button {
+  margin: 0.5rem;
   border: none;
-  background-color: #ef91b4;
-  color: white;
+  background-color: white;
+  color: black;
   font-size: 1em;
   padding: 2% 6%;
   box-sizing: border-box;
   border-radius: 7px;
   float: right;
-  font-weight: 200;
+  font-weight: 400;
   text-decoration: none; }
   button:hover, .button:hover {
     color: white;

@@ -13,7 +13,7 @@
   (let [email-address (reagent/atom nil)
         password (reagent/atom nil)
         credentials (reagent/atom nil)]
-    [:div {:class "sign-in"}
+    [:div {:class "sign-form sign-in"}
      [:h1 "Sign in"]
      [:form {:class     "login-form"
              :on-submit (fn [e] (.preventDefault e))}
