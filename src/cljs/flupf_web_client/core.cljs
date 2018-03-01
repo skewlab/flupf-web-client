@@ -54,7 +54,7 @@
                       (println "i home defroute, core auth is: " (session/get :authenticated))
                       (if (session/get :authenticated)
                         (do (render home-page) (set-hash! "/home"))
-                        (do (render signin-page) (set-hash! "/signin"))))
+                        (do (render start-page) (set-hash! "/"))))
 
 
   (secretary/defroute "/user/:id" [id]
@@ -64,8 +64,9 @@
                         (do (api/api-get {:endpoint (str "feed/" id) :keyword :user-feed})
                             (api/api-get {:endpoint (str "users/" id) :keyword :user-profile})
                             (println "i user defroute, core auth is: " (session/get :authenticated))
-                            (render user-page)
-                            (set-hash! (str "/user/" id)))))
+                            (if (session/get :authenticated)
+                              (do (render user-page) (set-hash! (str "/user/" id)))
+                              (do (render start-page) (set-hash! "/"))))))
 
   (secretary/defroute "/signin" []
                       (println "i login defroute, core auth is: " (session/get :authenticated))

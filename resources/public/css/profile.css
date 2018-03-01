@@ -6,10 +6,11 @@
   margin-top: 25%; }
   .profile-info img {
     box-sizing: border-box;
-    width: 60%;
+    width: 80%;
+    margin: 0% 10%;
     border-radius: 100%; }
-  .profile-info .user-profile-name {
-    font-weight: 500; }
+  .profile-info h2 {
+    text-align: center; }
   .profile-info .user-description {
     font-weight: 300;
     color: #e4e4ec; }

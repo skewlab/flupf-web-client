@@ -12,8 +12,8 @@ body {
   width: 100%;
   margin: 0;
   padding: 0;
-  background-image: Url("../background-img-pink.png");
-  background-size: cover;
+  background-image: Url("../pattern-bg-grey.png");
+  background-size: repeat;
   font-family: Montserrat, sans-serif;
   box-sizing: border-box; }
 
@@ -21,6 +21,9 @@ form {
   box-sizing: border-box; }
   form input {
     box-sizing: border-box; }
+
+.error-msg {
+  color: red; }
 
 button, .button {
   margin: 0.5rem;
@@ -38,6 +41,15 @@ button, .button {
     color: white;
     transition: 0.15s ease-in-out;
     cursor: pointer; }
+
+.attention-btn {
+  border-radius: 2pt;
+  margin: 0;
+  width: 100%;
+  padding: 1.3rem 0rem;
+  color: white;
+  background-color: #ff7381;
+  outline: none; }
 
 .content-box {
   border-radius: 7px;
@@ -61,8 +73,8 @@ body {
   width: 100%;
   margin: 0;
   padding: 0;
-  background-image: Url("../background-img-pink.png");
-  background-size: cover;
+  background-image: Url("../pattern-bg-grey.png");
+  background-size: repeat;
   font-family: Montserrat, sans-serif;
   box-sizing: border-box; }
 
@@ -70,6 +82,9 @@ form {
   box-sizing: border-box; }
   form input {
     box-sizing: border-box; }
+
+.error-msg {
+  color: red; }
 
 button, .button {
   margin: 0.5rem;
@@ -87,6 +102,15 @@ button, .button {
     color: white;
     transition: 0.15s ease-in-out;
     cursor: pointer; }
+
+.attention-btn {
+  border-radius: 2pt;
+  margin: 0;
+  width: 100%;
+  padding: 1.3rem 0rem;
+  color: white;
+  background-color: #ff7381;
+  outline: none; }
 
 .content-box {
   border-radius: 7px;
@@ -148,10 +172,11 @@ button, .button {
   margin-top: 25%; }
   .profile-info img {
     box-sizing: border-box;
-    width: 60%;
+    width: 80%;
+    margin: 0% 10%;
     border-radius: 100%; }
-  .profile-info .user-profile-name {
-    font-weight: 500; }
+  .profile-info h2 {
+    text-align: center; }
   .profile-info .user-description {
     font-weight: 300;
     color: #e4e4ec; }
@@ -166,8 +191,8 @@ body {
   width: 100%;
   margin: 0;
   padding: 0;
-  background-image: Url("../background-img-pink.png");
-  background-size: cover;
+  background-image: Url("../pattern-bg-grey.png");
+  background-size: repeat;
   font-family: Montserrat, sans-serif;
   box-sizing: border-box; }
 
@@ -175,6 +200,9 @@ form {
   box-sizing: border-box; }
   form input {
     box-sizing: border-box; }
+
+.error-msg {
+  color: red; }
 
 button, .button {
   margin: 0.5rem;
@@ -193,6 +221,15 @@ button, .button {
     transition: 0.15s ease-in-out;
     cursor: pointer; }
 
+.attention-btn {
+  border-radius: 2pt;
+  margin: 0;
+  width: 100%;
+  padding: 1.3rem 0rem;
+  color: white;
+  background-color: #ff7381;
+  outline: none; }
+
 .content-box {
   border-radius: 7px;
   background-color: white;
@@ -206,7 +243,7 @@ button, .button {
   position: absolute;
   left: 20%;
   padding: 2%;
-  background-color: #eeeff3;
+  background-color: #dfe3eb;
   box-sizing: border-box; }
 
 .user-content {
@@ -234,36 +271,59 @@ button, .button {
 .post-form {
   width: 100%;
   box-sizing: border-box;
-  background-color: #e4e4ec;
+  background-color: white;
   float: left;
   border-top-left-radius: 7px;
   border-top-right-radius: 7px;
-  padding: 6% 3% 3% 3%; }
+  padding: 4% 3% 3% 3%;
+  margin-bottom: 2rem; }
+  .post-form ::placeholder {
+    color: #3e5aa9;
+    font-weight: 100; }
   .post-form textarea {
+    color: #3e5aa9;
     width: 100%;
     min-height: 150px;
     float: left;
     box-sizing: border-box;
     border: none;
-    margin-bottom: 6% 3% 3% 3%;
+    margin-bottom: 4% 3% 3% 3%;
     font-size: 1.5em;
     background-color: transparent;
     resize: none;
     outline: none;
-    color: #567;
     font-weight: 300; }
+  .post-form .post-btn {
+    margin: 0;
+    padding: 0;
+    outline: none; }
+    .post-form .post-btn:hover {
+      transition: transform .1s ease-in-out;
+      cursor: pointer;
+      transform: scale(1.05); }
 
 .user-feed {
   width: 100%;
   float: left;
   box-sizing: border-box; }
-  .user-feed .post {
-    background-color: white;
-    box-sizing: border-box;
-    width: 100%;
-    float: left;
-    padding: 6% 3% 3% 3%;
-    border-bottom: 1px solid #e4e4ec; }
+
+.post {
+  background-color: white;
+  box-sizing: border-box;
+  margin-bottom: 1rem;
+  width: 100%;
+  float: left;
+  padding: 4% 3% 3% 3%;
+  border-bottom: 1px solid #e4e4ec; }
+  .post a {
+    text-decoration: none; }
+  .post h2 {
+    color: #39daff;
+    font-size: 1.6rem; }
+  .post .description {
+    width: 25%;
+    color: #ff7381;
+    font-style: italic; }
 
 .post-content, .post-author {
   float: left;
@@ -281,7 +341,7 @@ button, .button {
     width: 75%; }
 
 .post-content {
-  width: 100%; }
+  width: 75%; }
 
 .up-button {
   color: rgba(0, 0, 0, 0.3); }
@@ -289,7 +349,7 @@ button, .button {
     margin-right: 1%; }
 
 .active-up-button i {
-  color: #ef91b4; }
+  color: #4a7de1; }
 
 .chat-wrapper {
   width: 100%;
@@ -302,7 +362,7 @@ button, .button {
   background-color: #e4e4ec;
   border-top-left-radius: 7px;
   border-top-right-radius: 7px;
-  padding: 6% 3% 3% 3%;
+  padding: 4% 3% 3% 3%;
   box-sizing: border-box;
   height: 279px;
   overflow-y: scroll; }
@@ -354,12 +414,12 @@ header {
     float: left;
     margin: 0;
     font-size: 2.5rem;
-    color: white;
+    color: #3e5aa9;
     letter-spacing: 1pt;
     margin-left: 2rem; }
   header a {
     float: right;
-    color: #eee;
+    color: #3e5aa9;
     font-size: 2rem;
     line-height: 1rem;
     margin: 1.9rem 2.5rem;
@@ -368,49 +428,75 @@ header {
     transition: color 0.1s ease-in-out; }
     header a:hover, header a.selected {
       color: white; }
+  header .sign-in-btn {
+    border-radius: 5pt;
+    border: 2pt solid #ff7381;
+    margin: 1rem 0%;
+    padding: 0.5rem 1rem;
+    color: #ff7381;
+    background: none; }
+    header .sign-in-btn:hover {
+      background-color: #ff7381;
+      color: white; }
 
 .sign-form {
-  margin-top: 2%;
-  width: 30%;
-  padding: 3% 7% 3% 4%;
+  width: 40%;
+  margin: 0% 30%;
   box-sizing: border-box;
-  float: right;
-  color: white; }
+  text-align: center;
+  float: left;
+  color: #3e5aa9; }
   .sign-form ::placeholder {
-    color: rgba(255, 255, 255, 0.7); }
+    color: #3e5aa9;
+    font-weight: 100; }
   .sign-form h1 {
     margin: 10pt 0pt;
     font-family: 'Pacifico', cursive;
     font-weight: 200; }
   .sign-form a {
-    color: white;
+    color: #ff7381;
     float: left;
     padding: 1rem 0rem; }
+  .sign-form .sign-column {
+    float: left;
+    width: 48%;
+    margin: 1%; }
   .sign-form input[type="text"], .sign-form input[type="password"], .sign-form input[type="email"], .sign-form input[type="url"] {
-    background: none;
-    color: white;
+    background: white;
+    float: left;
+    color: #3e5aa9;
     width: 100%;
     font-size: 1em;
-    padding: 1em 0;
+    padding: 1.3rem;
     border: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 2pt;
+    border-bottom: 2pt solid white;
     box-sizing: border-box;
-    font-weight: 100;
-    margin-bottom: 0.5em; }
+    font-weight: 400;
+    margin-bottom: 1rem; }
     .sign-form input[type="text"]:focus, .sign-form input[type="password"]:focus, .sign-form input[type="email"]:focus, .sign-form input[type="url"]:focus {
       outline: none;
-      border-color: white; }
+      border-color: #4a7de1; }
 
 .sign-up {
   float: left; }
+  .sign-up .button {
+    margin: 0% 1%;
+    width: 98%; }
+
+.sign-in {
+  float: left;
+  width: 20%;
+  margin: 2% 40%; }
 
 .flupf-info {
-  width: 35%;
-  text-align: center;
   float: left;
-  color: white; }
+  width: 40%;
+  margin: 2% 30%;
+  text-align: center;
+  color: #3e5aa9; }
   .flupf-info h2 {
-    color: white;
+    color: #3e5aa9;
     font-size: 2rem;
     margin: 0;
     font-family: 'Pacifico', cursive;

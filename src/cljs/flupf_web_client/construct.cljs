@@ -1,11 +1,13 @@
 (ns flupf-web-client.construct
   (:require [reagent.core :as reagent]
-            [flupf-web-client.api-service :as api]))
+            [flupf-web-client.api-service :as api]
+            [flupf-web-client.session :as session]))
 
 (defn create-state []
   "initiate state"
   (reagent/atom {:active-page   :login
-                 :authenticated nil}))
+                 :authenticated nil
+                 :sign-in false}))
 
 
 (defn sign-out []
@@ -27,7 +29,12 @@
   []
   [:header
    [:h1 {:class "logo-header"} "flupf - a simplistic network"]
-   [:a "about"]])
+   [:a "about"]
+   (if (session/get :sign-in)
+     [:button {:class "sign-in-btn"
+               :on-click #(session/put! :sign-in false)} "Sign up!"]
+     [:button {:class "sign-in-btn"
+               :on-click #(session/put! :sign-in true)} "Sign in"])])
 
 ;;----------------------------------------
 ;;---------         MENU         ---------

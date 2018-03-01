@@ -8,13 +8,14 @@ html
   margin: 0
   padding: 0
   box-sizing: border-box
+
 body
   //height: 100%
   width: 100%
   margin: 0
   padding: 0
-  background-image: Url('../background-img-pink.png')
-  background-size: cover
+  background-image: Url('../pattern-bg-grey.png')
+  background-size: repeat
   font-family: Montserrat, sans-serif
   box-sizing: border-box
 
@@ -22,6 +23,9 @@ form
   box-sizing: border-box
   input
     box-sizing: border-box
+
+.error-msg
+  color: red
 
 button, .button
   margin: 0.5rem
@@ -39,6 +43,15 @@ button, .button
     color: white
     transition: 0.15s ease-in-out
     cursor: pointer
+
+.attention-btn
+  border-radius: 2pt
+  margin: 0
+  width: 100%
+  padding: 1.3rem 0rem
+  color: white
+  background-color: $color-pink-theme
+  outline: none
 
 // GENERAL STYLING //
 .content-box

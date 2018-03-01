@@ -1,7 +1,8 @@
 (ns flupf-web-client.views.signin
   (:require [reagent.core :as reagent]
             [flupf-web-client.api-service :refer [api-post]]
-            [flupf-web-client.components :refer [input-element]]))
+            [flupf-web-client.components :refer [input-element]]
+            [flupf-web-client.session :as session]))
 
 ;;----------------------------------------
 ;;---------     SIGN IN PAGE     ---------
@@ -13,7 +14,7 @@
   (let [email-address (reagent/atom nil)
         password (reagent/atom nil)
         credentials (reagent/atom nil)]
-    [:div {:class "sign-form sign-in"}
+    [:div {:class "sign-form sign-in "}
      [:h1 "Sign in"]
      [:form {:class     "login-form"
              :on-submit (fn [e] (.preventDefault e))}
@@ -28,10 +29,10 @@
                       :type        "password"
                       :placeholder "password"
                       :value       password}]
-
+      [:p {:class "error-msg"} (session/get! :error-response-message)]
       [:input {:type     "submit"
                :value    "sign in"
-               :class    "button"
+               :class    "button attention-btn"
                :on-click (fn []
                            (api-post {:endpoint "signin"
                                       :keyword  :signin-response

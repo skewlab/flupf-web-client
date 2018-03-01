@@ -15,8 +15,8 @@
                              ;; There exist info about which table, so if we need notifications form other
                              ;; tables this is possible!
                              (new-post (js->clj (.parse js/JSON (.-data e)) :keywordize-keys true )))
-               :on-open #(prn "Opening a new connection")
-               :on-close #(prn "Closing a connection")})
+
+               :on-close #(print "Closing a connection")})
 
 (def socket (ws/create "ws://localhost:8000/websocket" handlers))
 
@@ -25,7 +25,7 @@
 (def api-url "http://localhost:8000/api/")
 
 (defn error-handler [error]
-  (println error))
+  (session/put! :error-response-message (get-in error [:response :message])))
 
 (defn api-get [{endpoint :endpoint
                 keyword  :keyword}]
@@ -46,12 +46,16 @@
                         "Access-Control-Allow-Origin" "*"}
               :params           params
               :handler          (fn [response]
+                                  (if (=(:message response) "User added")
+                                    (api-post {:endpoint "signin"
+                                               :keyword  :signin-response
+                                               :params   params}))
                                   (cond (= endpoint "signin")
                                         (do (session/put! :authenticated true)
                                             (secretary/dispatch! "/home"))
                                         (= endpoint "signout")
                                         (do (session/put! :authenticated false)
-                                            (secretary/dispatch! "/login")))
+                                            (secretary/dispatch! "/")))
                                   (session/put! keyword response))
               :error-handler    #(error-handler %)
               :with-credentials true

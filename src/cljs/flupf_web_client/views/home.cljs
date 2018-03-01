@@ -47,29 +47,53 @@
 ;;---------       POST (verb)    ---------
 
 (defn post-component []
-  (let [post (reagent/atom nil)]
-    [:div
-     [:form {:class     "post-form"
-             :on-submit (fn [e] (.preventDefault e))}
-      [:textarea {:id          "post"
-                  :name        "post"
-                  :placeholder "What are you thinking about?"
-                  :type        "text"
-                  :on-change   (fn [%] (reset! post (-> % .-target .-value))
-                                 (ws/send socket {:command "ping"} fmt/json))}]
-      [:button {:type     "sumbit"
-                :class    "post-btn"
-                :on-click #(api-post
-                             {:endpoint "posts"
-                              :keyword  :post-response
-                              :params   {:userid  (session/get-in [:profile :id])
-                                         :content @post}})} "Post"]]]))
+  (let [post (reagent/atom "")]
+    (fn []
+      [:div
+       [:form {:class     "post-form"
+               :on-submit (fn [e] (.preventDefault e)
+                            (reset! post ""))}
+        [:textarea {:id          "post"
+                    :name        "post"
+                    :type        "text"
+                    :value       @post
+                    :placeholder "What are you thinking about?"
+                    :on-change   #(reset! post (-> % .-target .-value))}]
+        [:button {:type     "sumbit"
+                  :class    "post-btn"
+                  :on-click (fn [event]
+                              (api-post
+                                {:endpoint "posts"
+                                 :keyword  :post-response
+                                 :params   {:userid  (session/get-in [:profile :id])
+                                            :content @post}}))}
+         ;; SVG button to post
+         [:svg {:version           "1.1"
+                :id                "Layer_1"
+                :xmlns             "http://www.w3.org/2000/svg"
+                :x                 "0px"
+                :y                 "0px"
+                :width             "55.216px"
+                :height            "55.216px"
+                :viewBox           "0 0 55.216 55.216"
+                :enable-background "new 0 0 55.216 55.216"}
+          [:g
+           [:circle {:fill "#FF7381"
+                     :cx   "27.608"
+                     :cy   "27.608"
+                     :r    "27.608"}]]
+          [:polyline {:fill              "none"
+                      :stroke            "#FFFFFF"
+                      :stroke-width      "2"
+                      :stroke-miterlimit "10"
+                      :points            "28.566,34.168 24.839,39.497
+			21.775,32.387 8.016,33.429 35.797,17.096 41.824,13.552 36.566,36.516 21.775,32.387 31.875,25.66"}]]]]])))
 
 ;;---------     USER-FEED    ---------
 
 (defn user-feed []
   [:div {:class "user-feed"}
-   [:div (post-component)
+   [:div [post-component]
     (map (fn [feed-post]
            ^{:key feed-post} [post feed-post])
          (session/get :user-feed))]])

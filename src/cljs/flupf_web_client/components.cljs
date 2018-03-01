@@ -72,7 +72,8 @@
   [:div {:class "profile-info"}
    [:img {:src (get-in profile [:avatar :String])
           :alt "no avatar available"}]
-   [contact-name (:id profile) [:h2 (get-in profile [:alias :String])]]
+   [contact-name (:id profile)
+    [:h2 {:class "user-profile-name"} (get-in profile [:alias :String])]]
    [:ul {:class "profile-info"}
     [:li (get-in profile [:description :String])]
     [:li (get-in profile [:website :String])]
@@ -119,9 +120,11 @@
     [:div
      [contact-name (:userid post-info)
       [:h2 {:class "post-author-alias"} (:alias post-info)]]
-     [:small {:class "post-author-description"} "maybe also fetch description here"]]]
-   [:div {:class "post-content"}
-    [:p (:content post-info)]]
+     [:div {:class "post-content"}
+      [:p (:content post-info)]]]]
+
+   [:div {:class "description"}
+    [:small "maybe also fetch description here"]]
    [:br]
    [:small (:date_created post-info)]
    [:br]
@@ -145,7 +148,7 @@
   "An input element which updates its value on change"
   [{id :id name :name type :type placeholder :placeholder value :value label :label required? :required}]
   [:div
-   [:strong [:label label (if required? "*")]]
+   [:strong #_[:label label (if required? "*")]]
    [:input {:id          id
             :name        name
             :placeholder placeholder
